@@ -1,7 +1,13 @@
 # Communication protocol
 
+[//]: # (TODO: Finish this document.)
+
 This document describes the protocol used for communication between the different nodes of the
 distributed application.
+
+## Introduction
+
+A short introduction of the contents of this document.
 
 ## Terminology
 
