@@ -177,10 +177,7 @@ public class Actuator {
    * @param on Turn on when true, turn off when false
    */
   public void set(boolean on) {
-    if (on) {
-      turnOn();
-    } else {
-      turnOff();
-    }
+    Runnable action =  on ? this::turnOn : this::turnOff;
+    action.run();
   }
 }

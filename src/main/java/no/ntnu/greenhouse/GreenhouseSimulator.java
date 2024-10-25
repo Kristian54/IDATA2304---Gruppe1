@@ -58,11 +58,8 @@ public class GreenhouseSimulator {
   }
 
   private void initiateCommunication() {
-    if (fake) {
-      initiateFakePeriodicSwitches();
-    } else {
-      initiateRealCommunication();
-    }
+   Runnable action = fake ? this::initiateFakePeriodicSwitches : this::initiateRealCommunication;
+   action.run();
   }
 
   private void initiateRealCommunication() {
