@@ -27,15 +27,14 @@ public class TCPServer {
         Socket clientSocket = serverSocket.accept();
         System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
 
-        ClientHandler clientHandler = new ClientHandler(clientSocket);
-        new Thread(clientHandler).start();
-
+        new Thread(new ClientHandler(clientSocket)).start();
       }
+
     } catch (IOException e) {
       throw new RuntimeException("Cannot open port", e);
     }
     finally {
-        stopServer();
+      stopServer();
     }
   }
 

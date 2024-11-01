@@ -62,5 +62,10 @@ public class TcpNodeClient {
 
   public static void main(String args[]) {
     TcpNodeClient client = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
+    //TcpNodeClient client2 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
+    //TcpNodeClient client3 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
+    //TcpNodeClient client4 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
+    //TcpNodeClient client5 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
+    //TcpNodeClient client6 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
   }
 }
