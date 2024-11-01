@@ -2,10 +2,20 @@ package no.ntnu.server;
 
 import java.io.*;
 import java.net.*;
+import java.util.Objects;
+import no.ntnu.controlpanel.TcpCommunicationChannel;
 
 public class TCPServer {
+  public static final int PORT_NUMBER = 10020;
   private ServerSocket serverSocket;
   private boolean running = false;
+  private TcpCommunicationChannel communicationChannel;
+
+
+  public TCPServer(TcpCommunicationChannel communicationChannel) {
+    if (communicationChannel == null) throw new RuntimeException("Communication channel cannot be null");
+    this.communicationChannel = communicationChannel;
+  }
 
   public void startServer(int port) {
     try {
@@ -22,7 +32,7 @@ public class TCPServer {
 
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Cannot open port", e);
     }
     finally {
         stopServer();
@@ -37,13 +47,7 @@ public class TCPServer {
         System.out.println("Server stopped.");
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Error closing server", e);
     }
   }
-
-  public static void main(String[] args) {
-    TCPServer server = new TCPServer();
-    server.startServer(8080);
-  }
-
 }
