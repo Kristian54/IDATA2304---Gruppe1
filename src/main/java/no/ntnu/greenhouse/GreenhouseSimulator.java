@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import no.ntnu.controlpanel.TcpCommunicationChannel;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
+import no.ntnu.server.TCPServer;
 import no.ntnu.tools.Logger;
 
 /**
@@ -37,6 +39,7 @@ public class GreenhouseSimulator {
   }
 
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
+    // TODO - Lage TcpNodeClient her?
     SensorActuatorNode node = DeviceFactory.createNode(
         temperature, humidity, windows, fans, heaters);
     nodes.put(node.getId(), node);
@@ -64,7 +67,7 @@ public class GreenhouseSimulator {
 
   private void initiateRealCommunication() {
     // TODO - here you can set up the TCP or UDP communication
-    // Sett opp TCPServer i denne metoden (gjør den om til singleton for å kun ha en instans)
+    // Sett opp TCPServer i denne metoden
   }
 
   private void initiateFakePeriodicSwitches() {

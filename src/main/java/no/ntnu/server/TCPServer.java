@@ -18,6 +18,12 @@ public class TCPServer {
     this.communicationChannel = communicationChannel;
   }
 
+  /**
+   * Controls that only one instance of the TCP server is created.
+   *
+   * @param communicationChannel the communication channel to use
+   * @return the TCP server instance
+   */
   public static TCPServer getInstance(TcpCommunicationChannel communicationChannel) {
     if (instance == null)
       instance = new TCPServer(communicationChannel);
