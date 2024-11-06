@@ -32,6 +32,7 @@ public class ControlPanelStarter {
     if (args.length == 1 && "fake".equals(args[0])) {
       Logger.info("Using FAKE events");
     }
+
     ControlPanelStarter starter = new ControlPanelStarter(fake);
     starter.start();
   }

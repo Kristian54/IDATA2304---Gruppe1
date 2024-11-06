@@ -14,7 +14,7 @@ public class TcpNodeClient {
 
   public TcpNodeClient(String ipAddress, int port, SensorActuatorNode node) {
     if (node == null) throw new RuntimeException("Node cannot be null");
-    if (ipAddress == null) throw new RuntimeException("IP Adress cannot be null");
+    if (ipAddress == null) throw new RuntimeException("IP Address cannot be null");
     if (port < 0 || port > 65535) throw new RuntimeException("Port number must be within 5 digits and not negative");
     this.ip = ipAddress;
     this.port = port;
@@ -62,10 +62,5 @@ public class TcpNodeClient {
 
   public static void main(String args[]) {
     TcpNodeClient client = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
-    //TcpNodeClient client2 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
-    //TcpNodeClient client3 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
-    //TcpNodeClient client4 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
-    //TcpNodeClient client5 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
-    //TcpNodeClient client6 = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
   }
 }
