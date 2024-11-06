@@ -64,6 +64,7 @@ public class GreenhouseSimulator {
 
   private void initiateRealCommunication() {
     // TODO - here you can set up the TCP or UDP communication
+    // Sett opp TCPServer i denne metoden (gjør den om til singleton for å kun ha en instans)
   }
 
   private void initiateFakePeriodicSwitches() {

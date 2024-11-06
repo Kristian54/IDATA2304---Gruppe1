@@ -10,11 +10,18 @@ public class TCPServer {
   private ServerSocket serverSocket;
   private boolean running = false;
   private TcpCommunicationChannel communicationChannel;
+  private static TCPServer instance;
 
 
-  public TCPServer(TcpCommunicationChannel communicationChannel) {
+  private TCPServer(TcpCommunicationChannel communicationChannel) {
     if (communicationChannel == null) throw new RuntimeException("Communication channel cannot be null");
     this.communicationChannel = communicationChannel;
+  }
+
+  public static TCPServer getInstance(TcpCommunicationChannel communicationChannel) {
+    if (instance == null)
+      instance = new TCPServer(communicationChannel);
+    return instance;
   }
 
   public void startServer(int port) {

@@ -20,7 +20,7 @@ public class TcpCommunicationChannel implements CommunicationChannel {
   public boolean open() {
     Boolean result = false;
     try {
-      this.server = new TCPServer(this);
+      this.server = TCPServer.getInstance(this);
       this.server.startServer(TCPServer.PORT_NUMBER);
       result = true;
     } catch (RuntimeException e) {
