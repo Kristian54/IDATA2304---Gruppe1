@@ -14,7 +14,7 @@ import no.ntnu.tools.Logger;
  */
 public class GreenhouseSimulator {
   private final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
-
+  private final Map<Integer, TcpNodeClient> nodeClients = new HashMap<>();
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
   private final boolean fake;
 
@@ -39,10 +39,23 @@ public class GreenhouseSimulator {
   }
 
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
-    // TODO - Lage TcpNodeClient her?
     SensorActuatorNode node = DeviceFactory.createNode(
         temperature, humidity, windows, fans, heaters);
     nodes.put(node.getId(), node);
+    if (!fake) {
+      initiateTcpNodeClient(node);
+    }
+  }
+
+  private void initiateTcpNodeClient(SensorActuatorNode node) {
+    Thread clientProcessor = new Thread(() -> {
+      TcpNodeClient client = new TcpNodeClient("127.0.0.1", 10020, node);
+      nodeClients.put(node.getId(), client);
+      System.out.println("Client created for node " + node.getId() + " on " + Thread.currentThread().getName());
+      client.run();
+
+    });
+    clientProcessor.start();
   }
 
   /**
@@ -91,7 +104,7 @@ public class GreenhouseSimulator {
         periodicSwitch.stop();
       }
     } else {
-      // TODO - here you stop the TCP/UDP communication
+      nodeClients.forEach((id, client) -> client.stop());
     }
   }
 

@@ -18,11 +18,9 @@ public class TcpNodeClient {
     if (port < 0 || port > 65535) throw new RuntimeException("Port number must be within 5 digits and not negative");
     this.ip = ipAddress;
     this.port = port;
-
-    run();
   }
   
-  private void run() {
+  public void run() {
     try {
       startConnection();
       this.running = true;
@@ -32,12 +30,6 @@ public class TcpNodeClient {
 
 
     while (running) {
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        System.out.println("Oida");
-      }
-      System.out.println("Do Things");
     }
 
     stopConnection();
@@ -64,9 +56,5 @@ public class TcpNodeClient {
 
   public void stop() {
     this.running = false;
-  }
-
-  public static void main(String args[]) {
-    TcpNodeClient client = new TcpNodeClient("127.0.0.1", 10020, new SensorActuatorNode(1));
   }
 }
