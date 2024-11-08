@@ -20,8 +20,11 @@ public class TcpCommunicationChannel implements CommunicationChannel {
   public boolean open() {
     Boolean result = false;
     try {
-      this.server = TCPServer.getInstance(this);
-      this.server.startServer(TCPServer.PORT_NUMBER);
+      new Thread(() -> {
+        this.server = TCPServer.getInstance(this);
+        this.server.startServer(TCPServer.PORT_NUMBER);
+      }).start();
+
       result = true;
     } catch (RuntimeException e) {
       //TODO: Handle error :)
