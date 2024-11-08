@@ -2,6 +2,7 @@ package no.ntnu.server;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientHandler extends Thread {
   private Socket clientSocket;
@@ -23,10 +24,10 @@ public class ClientHandler extends Thread {
         System.out.println("Echo: " + message); // Echo back the message to the client
       }
     } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
+      System.out.println("Error handling client: " + e.getMessage());
+    }
+    finally {
       System.out.println("Client on "+ Thread.currentThread().getName()+" disconnected");
-      //clientSocket.close();
     }
   }
 }

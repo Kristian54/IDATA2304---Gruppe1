@@ -55,9 +55,15 @@ public class TcpNodeClient {
       if (socket != null && !socket.isClosed()) {
         socket.close();
       }
+
+      System.out.println("Connection closed");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public void stop() {
+    this.running = false;
   }
 
   public static void main(String args[]) {
