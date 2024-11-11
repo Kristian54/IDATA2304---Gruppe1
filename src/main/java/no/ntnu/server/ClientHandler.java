@@ -2,12 +2,19 @@ package no.ntnu.server;
 
 import java.io.*;
 import java.net.Socket;
+import no.ntnu.controlpanel.TcpCommunicationChannel;
 
 public class ClientHandler extends Thread {
   private final Socket clientSocket;
+  private final TcpCommunicationChannel channel;
 
-  public ClientHandler(Socket socket) {
+  public ClientHandler(Socket socket, TcpCommunicationChannel channel) {
+    if (socket == null || channel == null) {
+      throw new IllegalArgumentException("Socket and channel cannot be null");
+    }
+
     this.clientSocket = socket;
+    this.channel = channel;
   }
 
   @Override
@@ -20,14 +27,7 @@ public class ClientHandler extends Thread {
       String message;
       // Read messages from the client
       while ((message = in.readLine()) != null) {
-        System.out.println("Received: " + message);
-        out.println("Echo: " + message); // Echo back the message to the client
-
-        // Optional: Add a command to allow the client to close the connection
-        if ("bye".equalsIgnoreCase(message)) {
-          System.out.println("Client requested to close the connection.");
-          break; // Exit the loop to close the socket and end the thread
-        }
+        handleInput(message);
       }
     } catch (IOException e) {
       System.out.println("Error handling client: " + e.getMessage());
@@ -38,6 +38,16 @@ public class ClientHandler extends Thread {
       } catch (IOException e) {
         System.out.println("Error closing client socket: " + e.getMessage());
       }
+    }
+  }
+
+  private void handleInput(String inputLine) {
+    String[] parts = inputLine.split(" ");
+    if (parts.length == 4 && "UPDATE".equals(parts[0])) {
+      int nodeId = Integer.parseInt(parts[1]);
+      int actuatorId = Integer.parseInt(parts[2]);
+      boolean isOn = "ON".equals(parts[3]);
+      channel.sendActuatorChange(nodeId, actuatorId, isOn);
     }
   }
 }

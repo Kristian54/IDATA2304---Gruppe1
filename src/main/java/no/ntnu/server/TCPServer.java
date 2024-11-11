@@ -40,7 +40,7 @@ public class TCPServer {
         Socket clientSocket = serverSocket.accept();
         System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
 
-        Thread thread = new Thread(new ClientHandler(clientSocket));
+        Thread thread = new Thread(new ClientHandler(clientSocket, communicationChannel));
         thread.start();
       }
 
