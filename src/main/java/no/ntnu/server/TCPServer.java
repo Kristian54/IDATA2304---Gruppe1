@@ -2,8 +2,6 @@ package no.ntnu.server;
 
 import java.io.*;
 import java.net.*;
-import java.util.Objects;
-import no.ntnu.controlpanel.TcpCommunicationChannel;
 
 public class TCPServer {
   public static final int PORT_NUMBER = 10020;

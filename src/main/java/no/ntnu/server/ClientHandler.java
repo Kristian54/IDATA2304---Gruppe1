@@ -2,7 +2,7 @@ package no.ntnu.server;
 
 import java.io.*;
 import java.net.Socket;
-import no.ntnu.controlpanel.TcpCommunicationChannel;
+import java.util.List;
 
 public class ClientHandler extends Thread {
   private final Socket clientSocket;
@@ -41,13 +41,15 @@ public class ClientHandler extends Thread {
     }
   }
 
+
   private void handleInput(String inputLine) {
-    String[] parts = inputLine.split(" ");
-    if (parts.length == 4 && "UPDATE".equals(parts[0])) {
-      int nodeId = Integer.parseInt(parts[1]);
-      int actuatorId = Integer.parseInt(parts[2]);
-      boolean isOn = "ON".equals(parts[3]);
-      channel.sendActuatorChange(nodeId, actuatorId, isOn);
+    List<String> inputParts = List.of(inputLine.split("-"));
+    switch (inputParts.get(0)) {
+      case "updateSensorData":
+        channel.advertiseSensorData(inputParts.get(1));
+        break;
+      default:
+        System.out.println("Unknown command: " + inputParts.get(0));
     }
   }
 }

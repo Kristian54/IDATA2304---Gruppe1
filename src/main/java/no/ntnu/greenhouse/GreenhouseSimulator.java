@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import no.ntnu.controlpanel.TcpCommunicationChannel;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
-import no.ntnu.server.TCPServer;
 import no.ntnu.tools.Logger;
 
 /**
@@ -44,6 +42,7 @@ public class GreenhouseSimulator {
     nodes.put(node.getId(), node);
     if (!fake) {
       initiateTcpNodeClient(node);
+
     }
   }
 
@@ -52,6 +51,7 @@ public class GreenhouseSimulator {
       TcpNodeClient client = new TcpNodeClient("127.0.0.1", 10020, node);
       nodeClients.put(node.getId(), client);
       System.out.println("Client created for node " + node.getId() + " on " + Thread.currentThread().getName());
+
       client.run();
 
     });

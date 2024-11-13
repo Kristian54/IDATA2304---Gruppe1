@@ -1,7 +1,6 @@
 package no.ntnu.greenhouse;
 import java.io.*;
 import java.net.*;
-import no.ntnu.controlpanel.TcpCommunicationChannel;
 
 public class TcpNodeClient {
 
