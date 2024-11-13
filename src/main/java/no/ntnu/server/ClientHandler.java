@@ -46,11 +46,14 @@ public class ClientHandler extends Thread {
 
 
   private void handleInput(String inputLine) {
+    System.out.println("Received: " + inputLine);
     List<String> inputParts = List.of(inputLine.split("-"));
     switch (inputParts.get(0)) {
       case "updateSensorData":
         channel.advertiseSensorData(inputParts.get(1));
         break;
+      case "nodeAdded":
+        channel.spawnNode(inputParts.get(1));
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
     }

@@ -38,6 +38,9 @@ public class TcpNodeClient {
       this.socket = new Socket(this.ip, this.port);
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+
+      sendCommand("nodeAdded-4;3_window");
+      sendCommand("updateSensorData-1;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %");
   }
   private void stopConnection () {
     try {
