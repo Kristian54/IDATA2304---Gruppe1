@@ -56,4 +56,23 @@ public class TcpNodeClient {
   public void stop() {
     this.running = false;
   }
+
+  /**
+   * Send a command to the server.
+   *
+   * @param command The command to send to the server
+   * @return {@code true} if the command was sent, {@code false} otherwise
+   */
+  public boolean sendCommand(String command) {
+    boolean sent = false;
+    if (writer != null && reader != null) {
+      try {
+        writer.println(command);
+        sent = true;
+      } catch (Exception e) {
+        System.out.println("Error sending command: " + e.getMessage());
+      }
+    }
+    return sent;
+  }
 }

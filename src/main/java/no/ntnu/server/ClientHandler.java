@@ -7,14 +7,17 @@ import java.util.List;
 public class ClientHandler extends Thread {
   private final Socket clientSocket;
   private final TcpCommunicationChannel channel;
+  private final BufferedReader socketReader;
+  private final PrintWriter socketWriter;
 
-  public ClientHandler(Socket socket, TcpCommunicationChannel channel) {
+  public ClientHandler(Socket socket, TcpCommunicationChannel channel) throws IOException {
     if (socket == null || channel == null) {
       throw new IllegalArgumentException("Socket and channel cannot be null");
     }
-
     this.clientSocket = socket;
     this.channel = channel;
+    socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
   }
 
   @Override
@@ -51,5 +54,14 @@ public class ClientHandler extends Thread {
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
     }
+  }
+
+  /**
+   * Send a response from the server to the client by using the TCP socket.
+   *
+   * @param message The message to sent to the client
+   */
+  public void senToClient(String message) {
+    socketWriter.println(message);
   }
 }
