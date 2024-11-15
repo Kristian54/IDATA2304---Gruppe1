@@ -181,6 +181,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Tab createNodeTab(SensorActuatorNodeInfo nodeInfo) {
     Tab tab = new Tab("Node " + nodeInfo.getId());
     SensorPane sensorPane = createEmptySensorPane();
+    System.out.println("NodeInfo: " + nodeInfo.getId());
     sensorPanes.put(nodeInfo.getId(), sensorPane);
     ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
     actuatorPanes.put(nodeInfo.getId(), actuatorPane);

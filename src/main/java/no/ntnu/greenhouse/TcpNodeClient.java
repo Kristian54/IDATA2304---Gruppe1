@@ -57,7 +57,14 @@ public class TcpNodeClient {
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 
       sendCommand("nodeAdded-4;3_window");
+      sendCommand("nodeAdded-1");
       sendCommand("updateSensorData-1;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %");
+    try {
+      Thread.sleep(5000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    sendCommand("updateSensorData-1;temperature=23.4 °C,temperature=36.8 °C,humidity=20 %");
   }
 
   /**
