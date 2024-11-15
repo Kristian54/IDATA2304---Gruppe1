@@ -30,9 +30,8 @@ public class GreenhouseSimulator {
    * Initialise the greenhouse but don't start the simulation just yet.
    */
   public void initialize() {
-    createNode(1, 2, 1, 0, 0);
-    //createNode(1, 0, 0, 2, 1);
-    //createNode(2, 0, 0, 0, 0);
+    createNode(2, 1, 3, 2, 1);
+    createNode(1, 2, 3, 2, 1);
     Logger.info("Greenhouse initialized");
   }
 
@@ -42,13 +41,13 @@ public class GreenhouseSimulator {
     nodes.put(node.getId(), node);
     if (!fake) {
       initiateTcpNodeClient(node);
-
     }
   }
 
   private void initiateTcpNodeClient(SensorActuatorNode node) {
     Thread clientProcessor = new Thread(() -> {
       TcpNodeClient client = new TcpNodeClient("127.0.0.1", 10020, node);
+
       nodeClients.put(node.getId(), client);
       System.out.println("Client created for node " + node.getId() + " on " + Thread.currentThread().getName());
 
