@@ -2,6 +2,9 @@ package no.ntnu.greenhouse;
 import java.io.*;
 import java.net.*;
 
+/**
+ * A TCP client for a node to connect a sensor/actuator.
+ */
 public class TcpNodeClient {
 
   private boolean running;
@@ -11,6 +14,13 @@ public class TcpNodeClient {
   private String ip;
   private int port;
 
+  /**
+   * Creates a new TCP client for a node to connect to a server.
+   *
+   * @param ipAddress The IP address of the server
+   * @param port The port number of the server
+   * @param node The sensor/actuator node to connect
+   */
   public TcpNodeClient(String ipAddress, int port, SensorActuatorNode node) {
     if (node == null) throw new RuntimeException("Node cannot be null");
     if (ipAddress == null) throw new RuntimeException("IP Address cannot be null");
@@ -18,7 +28,10 @@ public class TcpNodeClient {
     this.ip = ipAddress;
     this.port = port;
   }
-  
+
+  /**
+   * Starts the TCP client and connects to the server.
+   */
   public void run() {
     try {
       startConnection();
@@ -27,13 +40,17 @@ public class TcpNodeClient {
       System.out.println("Error connecting to server");
     }
 
-
     while (running) {
     }
 
     stopConnection();
   }
 
+  /**
+   * Starts the conections to the server.
+   *
+   * @throws IOException Upon failure to connect to the server
+   */
   private void startConnection() throws IOException {
       this.socket = new Socket(this.ip, this.port);
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
@@ -42,6 +59,10 @@ public class TcpNodeClient {
       sendCommand("nodeAdded-4;3_window");
       sendCommand("updateSensorData-1;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %");
   }
+
+  /**
+   * Stops the connection to the server.
+   */
   private void stopConnection () {
     try {
       if (this.writer != null) writer.close();
@@ -56,6 +77,9 @@ public class TcpNodeClient {
     }
   }
 
+  /**
+   * Stops the client.
+   */
   public void stop() {
     this.running = false;
   }

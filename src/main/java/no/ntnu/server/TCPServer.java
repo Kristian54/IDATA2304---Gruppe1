@@ -3,6 +3,9 @@ package no.ntnu.server;
 import java.io.*;
 import java.net.*;
 
+/**
+ * A TCP server for clients to connect to.
+ */
 public class TCPServer {
   public static final int PORT_NUMBER = 10020;
   private ServerSocket serverSocket;
@@ -10,7 +13,11 @@ public class TCPServer {
   private TcpCommunicationChannel communicationChannel;
   private static TCPServer instance;
 
-
+  /**
+   * Creates an instance of a TCP server.
+   *
+   * @param communicationChannel The communication channel to ube used
+   */
   private TCPServer(TcpCommunicationChannel communicationChannel) {
     if (communicationChannel == null) throw new RuntimeException("Communication channel cannot be null");
     this.communicationChannel = communicationChannel;
@@ -28,6 +35,11 @@ public class TCPServer {
     return instance;
   }
 
+  /**
+   * Starts the server on the specified port.
+   *
+   * @param port The port to start the server on
+   */
   public void startServer(int port) {
     try {
       serverSocket = new ServerSocket(port);
@@ -50,6 +62,9 @@ public class TCPServer {
     }
   }
 
+  /**
+   * Stops the server.
+   */
   public void stopServer() {
     running = false;
     try {
