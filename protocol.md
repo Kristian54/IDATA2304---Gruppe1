@@ -7,20 +7,22 @@ distributed application.
 
 ## Introduction
 
-A short introduction of the contents of this document.
+(Remove) A short introduction of the contents of this document.
+
+This document describes the commmunication protocol used in our solution to a functioning greenhouse 
+containing sensors and actuators. The greenhouse is controlled by a control panel **(write more about 
+the control panel when finished)**. The sensors and actuators are connected to a node that communicates with TCP to 
+the server.
 
 ## Terminology
 
-* Sensor - a device which senses the environment and describes it with a value (an integer value in
-  the context of this project). Examples: temperature sensor, humidity sensor.
-* Actuator - a device which can influence the environment. Examples: a fan, a window opener/closer,
-  door opener/closer, heater.
-* Sensor and actuator node - a computer which has direct access to a set of sensors, a set of
-  actuators and is connected to the Internet.
-* Control-panel node - a device connected to the Internet which visualizes status of sensor and
-  actuator nodes and sends control commands to them.
-* Graphical User Interface (GUI) - A graphical interface where users of the system can interact with
-  it.
+| Term | Description |
+|------|-------------|
+| Sensor | A device which senses the environment and describes it with a value (an integer value in the context of this project). Examples: temperature sensor, humidity sensor. |
+| Actuator | A device which can influence the environment. Examples: a fan, a window opener/closer,door opener/closer, heater. |
+| Sensor and actuator node | A computer which has direct access to a set of sensors, a set of actuators and is connected to the Internet. |
+| Control-panel node | A device connected to the Internet which visualizes status of sensor and actuator nodes and sends control commands to them. |
+| Graphical User Interface (GUI) | A graphical interface where users of the system can interact with it. |
 
 ## The underlying transport protocol
 
@@ -78,3 +80,7 @@ example scenario could be as follows:
 ## Reliability and security
 
 TODO - describe the reliability and security mechanisms your solution supports.
+
+## Sources
+
+TODO - list all sources used in this document.
