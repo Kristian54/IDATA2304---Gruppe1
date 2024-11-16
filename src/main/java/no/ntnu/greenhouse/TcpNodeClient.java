@@ -40,13 +40,20 @@ public class TcpNodeClient {
    * Starts the TCP client and connects to the server.
    */
   public void run() {
-    try {
-      startConnection();
-      this.running = true;
-    } catch (IOException e) {
-      System.out.println("Error connecting to server");
-    }
+    startConnection();
+    sendNodeActuatorData();
 
+    while (running) {
+      sendUpdatedSensorData();
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private void sendNodeActuatorData() {
     StringBuilder sb = new StringBuilder();
     sb.append("nodeAdded-");
     sb.append(node.getId());
@@ -60,37 +67,27 @@ public class TcpNodeClient {
     });
 
     sendCommand(sb.toString());
-
-
-    while (running) {
-      StringBuilder builder = new StringBuilder();
-      builder.append("updateSensorData-");
-      builder.append(node.getId());
-      builder.append(";");
-      List<Sensor> sensors = node.getSensors();
-      for (Sensor sensor: sensors) {
-        SensorReading reading = sensor.getReading();
-        builder.append(reading.getType());
-        builder.append("=");
-        builder.append(reading.getValue());
-        builder.append(" ");
-        builder.append(reading.getUnit());
-        builder.append(",");
-      }
-      sendCommand(builder.toString());
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-
-    stopConnection();
   }
 
+  private void sendUpdatedSensorData() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("updateSensorData-");
+    builder.append(node.getId());
+    builder.append(";");
+    List<Sensor> sensors = node.getSensors();
+    for (Sensor sensor: sensors) {
+      SensorReading reading = sensor.getReading();
+      builder.append(reading.getType());
+      builder.append("=");
+      builder.append(reading.getValue());
+      builder.append(" ");
+      builder.append(reading.getUnit());
+      builder.append(",");
+    }
+    sendCommand(builder.toString());
+  }
 
-  public static Map<String, Integer> countActuators(ActuatorCollection actuators) {
+  private static Map<String, Integer> countActuators(ActuatorCollection actuators) {
     Map<String, Integer> actuatorCounts = new HashMap<>();
 
     for (Actuator actuator : actuators) {
@@ -105,10 +102,15 @@ public class TcpNodeClient {
    *
    * @throws IOException Upon failure to connect to the server
    */
-  private void startConnection() throws IOException {
+  private void startConnection() {
+    try {
       this.socket = new Socket(this.ip, this.port);
       this.writer = new PrintWriter(this.socket.getOutputStream(), true);
       this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+      this.running = true;
+    } catch (IOException e) {
+      System.out.println("Error connecting to server");
+    }
   }
 
   /**
@@ -142,7 +144,7 @@ public class TcpNodeClient {
    * @param command The command to send to the server
    * @return {@code true} if the command was sent, {@code false} otherwise
    */
-  public boolean sendCommand(String command) {
+  private boolean sendCommand(String command) {
     boolean sent = false;
     if (writer != null && reader != null) {
       try {
