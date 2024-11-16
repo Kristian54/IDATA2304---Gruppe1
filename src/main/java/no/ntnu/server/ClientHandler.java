@@ -12,6 +12,7 @@ public class ClientHandler extends Thread {
   private final TcpCommunicationChannel channel;
   private final BufferedReader socketReader;
   private final PrintWriter socketWriter;
+  private boolean running;
 
   /**
    * Creates a new client handler and set up the input and output streams.
@@ -35,25 +36,21 @@ public class ClientHandler extends Thread {
    */
   @Override
   public void run() {
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-      System.out.println("Processing client on " + Thread.currentThread().getName());
+    this.running = true;
 
-      //TODO: MAke threads exit cleanly
-      String message;
-      // Read messages from the client
-      while ((message = in.readLine()) != null) {
-        handleInput(message);
+    while (this.running) {
+      recieveCommand();
+    }
+  }
+
+  private void recieveCommand() {
+    try {
+      String command = socketReader.readLine();
+      if (command != null) {
+        handleInput(command);
       }
     } catch (IOException e) {
-      System.out.println("Error handling client: " + e.getMessage());
-    } finally {
-      try {
-        clientSocket.close(); // Ensure the socket is closed when done
-        System.out.println("Client on " + Thread.currentThread().getName() + " disconnected");
-      } catch (IOException e) {
-        System.out.println("Error closing client socket: " + e.getMessage());
-      }
+      System.out.println("Error reading command: " + e.getMessage());
     }
   }
 
@@ -81,7 +78,9 @@ public class ClientHandler extends Thread {
    *
    * @param message The message to sent to the client
    */
-  public void senToClient(String message) {
-    socketWriter.println(message);
+  private void sendToClient(String message) {
+    if (socketWriter != null) {
+      socketWriter.println(message);
+    }
   }
 }
