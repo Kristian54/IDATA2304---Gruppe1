@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler extends Thread {
     private final Socket clientSocket;
@@ -48,11 +49,51 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleInput(String command) {
-        System.out.println("Received command: " + command);
-        switch (command) {
-            case "set":
+    /**
+     * Handle the input from the client (TCP socket).
+     *
+     * @param inputLine The input from the client
+     */
+    private void handleInput(String inputLine) {
+        System.out.println("Received: " + inputLine);
+        List<String> inputParts = List.of(inputLine.split("-"));
+        switch (inputParts.get(0)) {
+            case "setNodeType":
+                setNodeType(inputParts.get(1));
+                break;
+            case "setId":
+
+            case "updateSensorData":
+                //TODO: Implement
+                break;
+            case "nodeAdded":
+                //TODO: Implement
+                break;
+            default:
+                System.out.println("Unknown command: " + inputParts.get(0));
         }
+    }
+
+    private void setNodeType(String nodeType) {
+        if (nodeType.equals("SensorActuator")) {
+            this.nodeType = NodeType.SENSORACTUATOR;
+        } else if (nodeType.equals("ControlPanel")) {
+            this.nodeType = NodeType.CONTROLPANEL;
+        }
+    }
+
+    private void setId(String id) {
+        try {
+            int iD = Integer.parseInt(id);
+            if (iD < 0) {
+                //TODO: Send error response to client
+            } else {
+                this.id = iD;
+            }
+        } catch (NumberFormatException e) {
+            //TODO: Send error response to client
+        }
+
     }
 
     public NodeType getNodeType() {
