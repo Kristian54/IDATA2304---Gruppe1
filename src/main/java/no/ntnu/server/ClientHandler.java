@@ -1,86 +1,69 @@
 package no.ntnu.server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.List;
 
-/**
- * Handles communication with a client over a TCP socket.
- */
 public class ClientHandler extends Thread {
-  private final Socket clientSocket;
-  private final TcpCommunicationChannel channel;
-  private final BufferedReader socketReader;
-  private final PrintWriter socketWriter;
-  private boolean running;
+    private final Socket clientSocket;
+    private final TCPServer server;
+    private NodeType nodeType;
+    private int id;
+    private boolean running = false;
 
-  /**
-   * Creates a new client handler and set up the input and output streams.
-   *
-   * @param socket Socket associated with this client
-   * @param channel Reference to the main TCP server class
-   * @throws IOException Upon failure to establish input or output streams
-   */
-  public ClientHandler(Socket socket, TcpCommunicationChannel channel) throws IOException {
-    if (socket == null || channel == null) {
-      throw new IllegalArgumentException("Socket and channel cannot be null");
+    private final BufferedReader socketReader;
+    private final PrintWriter socketWriter;
+
+    public ClientHandler(Socket clientSocket, TCPServer server) throws IOException {
+        if (clientSocket == null || server == null) {
+            throw new IllegalArgumentException("Socket, server or node type cannot be null");
+        }
+
+        this.clientSocket = clientSocket;
+        this.server = server;
+        socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
     }
-    this.clientSocket = socket;
-    this.channel = channel;
-    socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-    socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-  }
 
-  /**
-   * Run the client handling logic.
-   */
-  @Override
-  public void run() {
-    this.running = true;
+    @Override
+    public void run() {
+        this.running = true;
+        System.out.println("Processing client on thread: " + Thread.currentThread().getName());
 
-    while (this.running) {
-      recieveCommand();
+        while (this.running) {
+            receiveCommand();
+        }
     }
-  }
 
-  private void recieveCommand() {
-    try {
-      String command = socketReader.readLine();
-      if (command != null) {
-        handleInput(command);
-      }
-    } catch (IOException e) {
-      System.out.println("Error reading command: " + e.getMessage());
+    private void receiveCommand() {
+        try {
+            String command = socketReader.readLine();
+            if (command != null) {
+                handleInput(command);
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading command: " + e.getMessage());
+        }
     }
-  }
 
-  /**
-   * Handle the input from the client (TCP socket).
-   *
-   * @param inputLine The input from the client
-   */
-  private void handleInput(String inputLine) {
-    System.out.println("Received: " + inputLine);
-    List<String> inputParts = List.of(inputLine.split("-"));
-    switch (inputParts.get(0)) {
-      case "updateSensorData":
-        channel.advertiseSensorData(inputParts.get(1));
-        break;
-      case "nodeAdded":
-        channel.spawnNode(inputParts.get(1));
-      default:
-        System.out.println("Unknown command: " + inputParts.get(0));
+    private void handleInput(String command) {
+        System.out.println("Received command: " + command);
+        switch (command) {
+            case "set":
+        }
     }
-  }
 
-  /**
-   * Send a response from the server to the client by using the TCP socket.
-   *
-   * @param message The message to sent to the client
-   */
-  private void sendToClient(String message) {
-    if (socketWriter != null) {
-      socketWriter.println(message);
+    public NodeType getNodeType() {
+        return nodeType;
     }
-  }
+
+    public int getHandlerId() {
+        return id;
+    }
+
+    public void stopHandler() {
+        this.running = false;
+    }
 }

@@ -33,7 +33,7 @@ public class TcpCommunicationChannel implements CommunicationChannel {
     Boolean result = false;
     try {
       new Thread(() -> {
-        this.server = TCPServer.getInstance(this);
+        this.server = TCPServer.getInstance();
         this.server.startServer(TCPServer.PORT_NUMBER);
       }).start();
 

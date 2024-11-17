@@ -1,16 +1,14 @@
 package no.ntnu.greenhouse;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
  * A TCP client for a node to connect a sensor/actuator.
  */
-public class TcpNodeClient {
+public class TcpSensorActuatorNodeClient {
 
   private boolean running;
   private Socket socket;
@@ -27,7 +25,7 @@ public class TcpNodeClient {
    * @param port The port number of the server
    * @param node The sensor/actuator node to connect
    */
-  public TcpNodeClient(String ipAddress, int port, SensorActuatorNode node) {
+  public TcpSensorActuatorNodeClient(String ipAddress, int port, SensorActuatorNode node) {
     if (node == null) throw new RuntimeException("Node cannot be null");
     if (ipAddress == null) throw new RuntimeException("IP Address cannot be null");
     if (port < 0 || port > 65535) throw new RuntimeException("Port number must be within 5 digits and not negative");

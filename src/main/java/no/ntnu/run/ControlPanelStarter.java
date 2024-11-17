@@ -56,8 +56,8 @@ public class ControlPanelStarter {
   }
 
   private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-    TcpCommunicationChannel communicationChannel = new TcpCommunicationChannel(logic);
-    return communicationChannel;
+    //TODO: Implement client socket communication here
+    return null;
   }
 
   private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
