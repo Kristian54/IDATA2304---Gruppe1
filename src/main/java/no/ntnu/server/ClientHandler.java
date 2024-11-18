@@ -62,7 +62,8 @@ public class ClientHandler extends Thread {
                 setNodeType(inputParts.get(1));
                 break;
             case "setId":
-
+                setId(inputParts.get(1));
+                break;
             case "updateSensorData":
                 //TODO: Implement
                 break;
@@ -89,6 +90,7 @@ public class ClientHandler extends Thread {
                 //TODO: Send error response to client
             } else {
                 this.id = iD;
+                System.out.println("Node ID set to: " + this.id);
             }
         } catch (NumberFormatException e) {
             //TODO: Send error response to client

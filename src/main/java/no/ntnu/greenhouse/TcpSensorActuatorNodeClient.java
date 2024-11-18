@@ -39,6 +39,8 @@ public class TcpSensorActuatorNodeClient {
    */
   public void run() {
     startConnection();
+    sendId();
+    sendNodeType();
     sendNodeActuatorData();
 
     while (running) {
@@ -49,6 +51,14 @@ public class TcpSensorActuatorNodeClient {
         throw new RuntimeException(e);
       }
     }
+  }
+
+  private void sendId() {
+    sendCommand("setId-" + node.getId());
+  }
+
+  private void sendNodeType() {
+    sendCommand("setNodeType-" + "SensorActuator");
   }
 
   private void sendNodeActuatorData() {
