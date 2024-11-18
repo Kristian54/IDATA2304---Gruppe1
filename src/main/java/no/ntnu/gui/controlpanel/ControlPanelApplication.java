@@ -46,25 +46,18 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    * We need to use another wrapper-class for the debugger to work.
    *
    * @param logic   The logic of the control panel node
-   * @param channel Communication channel for sending control commands and receiving events
    */
-  public static void startApp(ControlPanelLogic logic, CommunicationChannel channel) {
+  public static void startApp(ControlPanelLogic logic) {
     if (logic == null) {
       throw new IllegalArgumentException("Control panel logic can't be null");
     }
     ControlPanelApplication.logic = logic;
-    ControlPanelApplication.channel = channel;
     Logger.info("Running control panel GUI...");
     launch();
   }
 
   @Override
   public void start(Stage stage) {
-    if (channel == null) {
-      throw new IllegalStateException(
-          "No communication channel. See the README on how to use fake event spawner!");
-    }
-
     stage.setMinWidth(WIDTH);
     stage.setMinHeight(HEIGHT);
     stage.setTitle("Control panel");
@@ -73,9 +66,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.show();
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
-    if (!channel.open()) {
-      logic.onCommunicationChannelClosed();
-    }
   }
 
   private static Label createEmptyContent() {

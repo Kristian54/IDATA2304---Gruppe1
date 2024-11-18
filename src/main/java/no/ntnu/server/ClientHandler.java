@@ -65,10 +65,10 @@ public class ClientHandler extends Thread {
                 setId(inputParts.get(1));
                 break;
             case "updateSensorData":
-                //TODO: Implement
+                server.sendMessageToControlPanels(inputParts.get(1));
                 break;
             case "nodeAdded":
-                //TODO: Implement
+                server.sendMessageToControlPanels(inputParts.get(1));
                 break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));
@@ -95,7 +95,6 @@ public class ClientHandler extends Thread {
         } catch (NumberFormatException e) {
             //TODO: Send error response to client
         }
-
     }
 
     /**

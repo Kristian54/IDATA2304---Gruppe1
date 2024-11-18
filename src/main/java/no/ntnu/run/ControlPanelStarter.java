@@ -1,8 +1,9 @@
 package no.ntnu.run;
+import java.util.ArrayList;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.FakeCommunicationChannel;
-import no.ntnu.server.TcpCommunicationChannel;
+import no.ntnu.gui.controlpanel.TcpControlpanelNodeClient;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
@@ -13,6 +14,7 @@ import no.ntnu.tools.Logger;
  */
 public class ControlPanelStarter {
   private final boolean fake;
+  private final ArrayList<TcpControlpanelNodeClient> nodeClients = new ArrayList<>();
 
   public ControlPanelStarter(boolean fake) {
     this.fake = fake;
@@ -39,25 +41,23 @@ public class ControlPanelStarter {
 
   private void start() {
     ControlPanelLogic logic = new ControlPanelLogic();
-    CommunicationChannel channel = initiateCommunication(logic, fake);
-    ControlPanelApplication.startApp(logic, channel);
+    initiateCommunication(logic);
+    ControlPanelApplication.startApp(logic);
     // This code is reached only after the GUI-window is closed
     Logger.info("Exiting the control panel application");
   }
 
-  private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
-    CommunicationChannel channel;
-    if (fake) {
-      channel = initiateFakeSpawner(logic);
-    } else {
-      channel = initiateSocketCommunication(logic);
-    }
-    return channel;
-  }
+  private void initiateCommunication(ControlPanelLogic logic) {
+    Thread clientProcessor = new Thread(() -> {
+      TcpControlpanelNodeClient client = new TcpControlpanelNodeClient("127.0.0.1", 10020, logic);
 
-  private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-    //TODO: Implement client socket communication here
-    return null;
+      nodeClients.add(client);
+      System.out.println("Client created for control panel on "+ Thread.currentThread().getName());
+
+      client.run();
+
+    });
+    clientProcessor.start();
   }
 
   private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {

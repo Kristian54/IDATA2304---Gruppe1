@@ -1,7 +1,6 @@
 package no.ntnu.run;
 
 import no.ntnu.server.TCPServer;
-import no.ntnu.server.TcpCommunicationChannel;
 
 public class GreenhouseServerStarter {
     public static void main(String[] args) {
