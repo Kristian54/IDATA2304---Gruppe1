@@ -98,6 +98,17 @@ public class ClientHandler extends Thread {
 
     }
 
+    /**
+     * Send a response from the server to the client by using the TCP socket.
+     *
+     * @param message The message to sent to the client
+     */
+    public void sendToClient(String message) {
+        if (socketWriter != null) {
+            socketWriter.println(message);
+        }
+    }
+
     public NodeType getNodeType() {
         return nodeType;
     }

@@ -74,6 +74,33 @@ public class TCPServer {
   }
 
   /**
+   * Sends a message to all control panel clients.
+   *
+   * @param message The message to send
+   */
+  public void sendMessageToControlPanels(String message) {
+    for (ClientHandler clientHandler : clientsHandlers) {
+      if (clientHandler.getNodeType().equals(NodeType.CONTROLPANEL)) {
+        clientHandler.sendToClient(message);
+      }
+    }
+  }
+
+  /**
+   * Sends a message to a single sensor/actuator node.
+   *
+   * @param message The message to send
+   * @param id The id of the node to send the message to
+   */
+  public void sendMessageToSensorActuatorNode(String message, int id) {
+    for (ClientHandler clientHandler : clientsHandlers) {
+      if (clientHandler.getNodeType().equals(NodeType.SENSORACTUATOR) && clientHandler.getHandlerId() == id) {
+        clientHandler.sendToClient(message);
+      }
+    }
+  }
+
+  /**
    * Stops the server.
    */
   public void stopServer() {
