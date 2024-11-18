@@ -65,10 +65,10 @@ public class ClientHandler extends Thread {
                 setId(inputParts.get(1));
                 break;
             case "updateSensorData":
-                server.sendMessageToControlPanels(inputParts.get(1));
+                server.sendMessageToControlPanels(inputLine);
                 break;
             case "nodeAdded":
-                server.sendMessageToControlPanels(inputParts.get(1));
+                server.sendMessageToControlPanels(inputLine);
                 break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));

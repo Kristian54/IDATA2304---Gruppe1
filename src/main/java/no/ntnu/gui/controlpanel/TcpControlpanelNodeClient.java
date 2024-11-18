@@ -38,8 +38,10 @@ public class TcpControlpanelNodeClient {
   public void run() {
     startConnection();
     running = true;
+    sendCommand("setNodeType-ControlPanel");
 
     while (running) {
+      recieveCommand();
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
@@ -55,6 +57,32 @@ public class TcpControlpanelNodeClient {
       reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     } catch (IOException e) {
       throw new RuntimeException("Error connecting to server", e);
+    }
+  }
+
+  private void recieveCommand() {
+    try {
+      String command = reader.readLine();
+      if (command != null) {
+        handleInput(command);
+      }
+    } catch (Exception e) {
+      System.out.println("Error reading command: " + e.getMessage());
+    }
+  }
+
+  private void handleInput(String inputLine) {
+    System.out.println("Received: " + inputLine);
+    List<String> inputParts = List.of(inputLine.split("-"));
+    switch (inputParts.get(0)) {
+      case "nodeAdded":
+        spawnNode(inputParts.get(1));
+        break;
+      case "updateSensorData":
+        advertiseSensorData(inputParts.get(1));
+        break;
+      default:
+        System.out.println("Unknown command: " + inputParts.get(0));
     }
   }
 
@@ -173,5 +201,24 @@ public class TcpControlpanelNodeClient {
 
   private void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
     logic.onActuatorStateChanged(nodeId, actuatorId, isOn);
+  }
+
+  /**
+   * Send a command to the server.
+   *
+   * @param command The command to send to the server
+   * @return {@code true} if the command was sent, {@code false} otherwise
+   */
+  private boolean sendCommand(String command) {
+    boolean sent = false;
+    if (writer != null && reader != null) {
+      try {
+        writer.println(command);
+        sent = true;
+      } catch (Exception e) {
+        System.out.println("Error sending command: " + e.getMessage());
+      }
+    }
+    return sent;
   }
 }
