@@ -10,7 +10,7 @@ distributed application.
 (Remove) A short introduction of the contents of this document.
 
 This document describes the commmunication protocol used in our solution to a functioning greenhouse 
-containing sensors and actuators. The greenhouse is controlled by a control panel **(write more about 
+containing sensors and actuators. The greenhouse is controlled by one or more control panels **(write more about 
 the control panel when finished)**. The sensors and actuators are connected to a node that communicates with TCP to 
 the server.
 
@@ -29,6 +29,20 @@ the server.
 TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you 
 choose this transport layer protocol?
 
+In this project we use Transmission Control Protocol (TCP) as the underlying transport protocol. We 
+have chosen to use TCP in order to have reliable communication between the different elements of our 
+solution. TCP ensures that data packets is received by the receiving unit. This is done by 
+establishing a connection with a three-way handshake, which ensures that the sender and receiver 
+have a reliable connection. The second stage of the protocol is the data transfer, which may happen 
+in both directions between the sender and receiver. The receiver will send an acknowledgement after 
+it has received data. If the sender doesn't receive an acknowledgement, it will resend the message. 
+After all the data is sent, the connection will be terminated. This will also be done with a 
+three-way handshake [[1](#Sources)].
+
+To establish connection we have used port number 10020. There is no specific reason we have chosen 
+this port number, but we have made sure to consistently use the same port number. Since the port 
+number has to be a 16-bit integer, it can be any number between 0 and 65 535 [[1](#Sources)].
+
 ## The architecture
 
 TODO - show the general architecture of your network. Which part is a server? Who are clients? 
@@ -45,6 +59,11 @@ node type (For example: one subsection for sensor/actuator nodes, one for contro
 
 TODO - is your communication protocol connection-oriented or connection-less? Is it stateful or 
 stateless? 
+
+Since we are using TCP, the communication in this project is connection-oriented. This is described 
+in more detail in the chapter about [the underlying transport protocol](#The-underlying-transport-protocol).
+This is also a stateful protocol, since it keeps track of the data that is transmitted and if it is 
+transmitted or not, so it is able to retransmit data if an error occurs [2].
 
 ## Types, constants
 
@@ -83,4 +102,5 @@ TODO - describe the reliability and security mechanisms your solution supports.
 
 ## Sources
 
-TODO - list all sources used in this document.
+[1] B.A. Forouzan, *Data Communication & Networking with TCP/IP Protocol Suite*, 6th ed. New York: McGraw Hill LLC, 2022.
+[2] https://www.baeldung.com/cs/networking-stateless-stateful-protocols 
