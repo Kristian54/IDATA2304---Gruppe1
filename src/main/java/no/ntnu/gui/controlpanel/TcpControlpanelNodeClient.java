@@ -192,14 +192,12 @@ public class TcpControlpanelNodeClient {
     if (actuatorInfo.length != 2) {
       throw new IllegalArgumentException("Invalid actuator info format: " + s);
     }
-    int actuatorCount = parseIntegerOrError(actuatorInfo[0],
-        "Invalid actuator count: " + actuatorInfo[0]);
-    String actuatorType = actuatorInfo[1];
-    for (int i = 0; i < actuatorCount; ++i) {
-      Actuator actuator = new Actuator(actuatorType, info.getId());
-      actuator.setListener(logic);
-      info.addActuator(actuator);
-    }
+    int actuatorId = parseIntegerOrError(actuatorInfo[1],
+        "Invalid actuator count: " + actuatorInfo[1]);
+    String actuatorType = actuatorInfo[0];
+    Actuator actuator = new Actuator(actuatorId, actuatorType, info.getId());
+    actuator.setListener(logic);
+    info.addActuator(actuator);
   }
 
 

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
 
 /**
@@ -65,7 +64,8 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sb.append("nodeAdded-");
     sb.append(node.getId());
     sb.append(";");
-    Map<String, Integer> actuatorCounts = countActuators(node.getActuators());
+    Map<Integer, String> actuatorCounts = mapActuators(node.getActuators());
+
     actuatorCounts.forEach((type, count) -> {
       sb.append(count);
       sb.append("_");
@@ -94,11 +94,11 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sendCommand(builder.toString());
   }
 
-  private static Map<String, Integer> countActuators(ActuatorCollection actuators) {
-    Map<String, Integer> actuatorCounts = new HashMap<>();
+  private static Map<Integer, String> mapActuators(ActuatorCollection actuators) {
+    Map<Integer, String> actuatorCounts = new HashMap<>();
 
     for (Actuator actuator : actuators) {
-      actuatorCounts.put(actuator.getType(), actuatorCounts.getOrDefault(actuator.getType(), 0) + 1);
+      actuatorCounts.put(actuator.getId(), actuator.getType());
     }
 
     return actuatorCounts;
