@@ -16,13 +16,14 @@ the server.
 
 ## Terminology
 
-| Term | Description |
-|------|-------------|
-| Sensor | A device which senses the environment and describes it with a value (an integer value in the context of this project). Examples: temperature sensor, humidity sensor. |
-| Actuator | A device which can influence the environment. Examples: a fan, a window opener/closer,door opener/closer, heater. |
-| Sensor and actuator node | A computer which has direct access to a set of sensors, a set of actuators and is connected to the Internet. |
-| Control-panel node | A device connected to the Internet which visualizes status of sensor and actuator nodes and sends control commands to them. |
-| Graphical User Interface (GUI) | A graphical interface where users of the system can interact with it. |
+| Term | Description                                                                                                                                                            |
+|------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Sensor | A device which senses the environment and describes it with a value (an integer value in the context of this project). Examples: temperature sensor, humidity sensor.|
+| Actuator | A device which can influence the environment. Examples: a fan, a window opener/closer,door opener/closer, heater.                                                  |
+| Sensor and actuator node | A computer which has direct access to a set of sensors, a set of actuators and is connected to the Internet.                                       |
+| Control-panel node | A device connected to the Internet which visualizes status of sensor and actuator nodes and sends control commands to them.                              |
+| Graphical User Interface (GUI) | A graphical interface where users of the system can interact with it.                                                                        |
+| TCP | Transmission Control Protocol.                                                                                                                                          |
 
 ## The underlying transport protocol
 
@@ -63,11 +64,11 @@ stateless?
 Since we are using TCP, the communication in this project is connection-oriented. This is described 
 in more detail in the chapter about [the underlying transport protocol](#The-underlying-transport-protocol).
 This is also a stateful protocol, since it keeps track of the data that is transmitted and if it is 
-transmitted or not, so it is able to retransmit data if an error occurs [2].
+transmitted or not, so it is able to retransmit data if an error occurs [[2](#Sources)].
 
 ## Types, constants
 
-TODO - Do you have some specific value types you use in several messages? They you can describe 
+TODO - Do you have some specific value types you use in several messages? Then you can describe 
 them here.
 
 ## Message format
@@ -103,4 +104,5 @@ TODO - describe the reliability and security mechanisms your solution supports.
 ## Sources
 
 [1] B.A. Forouzan, *Data Communication & Networking with TCP/IP Protocol Suite*, 6th ed. New York: McGraw Hill LLC, 2022.
-[2] https://www.baeldung.com/cs/networking-stateless-stateful-protocols 
+
+[2] S. Datta. (2024, Mar. 18). *Networking: Stateless and Stateful Protocols* [Online]. Available: https://www.baeldung.com/cs/networking-stateless-stateful-protocols 
