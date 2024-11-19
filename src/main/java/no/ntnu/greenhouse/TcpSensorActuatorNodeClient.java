@@ -4,11 +4,12 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import no.ntnu.listeners.greenhouse.SensorListener;
 
 /**
  * A TCP client for a node to connect a sensor/actuator.
  */
-public class TcpSensorActuatorNodeClient {
+public class TcpSensorActuatorNodeClient implements SensorListener {
 
   private boolean running;
   private Socket socket;
@@ -32,6 +33,7 @@ public class TcpSensorActuatorNodeClient {
     this.node = node;
     this.ip = ipAddress;
     this.port = port;
+    node.addSensorListener(this);
   }
 
   /**
@@ -44,12 +46,6 @@ public class TcpSensorActuatorNodeClient {
     sendNodeActuatorData();
 
     while (running) {
-      sendUpdatedSensorData();
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
     }
   }
 
@@ -163,5 +159,13 @@ public class TcpSensorActuatorNodeClient {
       }
     }
     return sent;
+  }
+
+  /**
+   * Sends the updated sensor data to the server.
+   */
+  @Override
+  public void sensorsUpdated(List<Sensor> sensors) {
+    sendUpdatedSensorData();
   }
 }

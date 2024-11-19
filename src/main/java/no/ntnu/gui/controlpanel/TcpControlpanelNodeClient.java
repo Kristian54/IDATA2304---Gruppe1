@@ -43,7 +43,7 @@ public class TcpControlpanelNodeClient {
     while (running) {
       recieveCommand();
       try {
-        Thread.sleep(1000);
+        Thread.sleep(0);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }

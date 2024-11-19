@@ -1,5 +1,5 @@
 package no.ntnu.server;
 
 public enum NodeType {
-    CONTROLPANEL, SENSORACTUATOR
+    CONTROLPANEL, SENSORACTUATOR, UNDEFINED
 }

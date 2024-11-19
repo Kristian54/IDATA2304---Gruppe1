@@ -10,7 +10,7 @@ import java.util.List;
 public class ClientHandler extends Thread {
     private final Socket clientSocket;
     private final TCPServer server;
-    private NodeType nodeType;
+    private NodeType nodeType = NodeType.UNDEFINED;
     private int id;
     private boolean running = false;
 
