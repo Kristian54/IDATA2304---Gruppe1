@@ -7,7 +7,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -65,16 +66,41 @@ public class ActuatorPane extends TitledPane {
     return checkbox;
   }
 
-  private Label createActuatorLabel(Actuator actuator) {
+  private TextFlow createActuatorLabel(Actuator actuator) {
     SimpleStringProperty props = new SimpleStringProperty(generateActuatorText(actuator));
     actuatorValue.put(actuator, props);
-    Label label = new Label();
-    label.textProperty().bind(props);
-    return label;
+
+    Text staticText = new Text();
+    Text dynamicText = new Text();
+    TextFlow textFlow = new TextFlow(staticText, dynamicText);
+
+    props.addListener((observable, oldValue, newValue) -> {
+      updateTextFlowContent(staticText, dynamicText, newValue, actuator);
+    });
+
+    updateTextFlowContent(staticText, dynamicText, props.get(), actuator);
+
+    return textFlow;
+  }
+
+  private void updateTextFlowContent(Text staticText, Text dynamicText, String newValue,
+                                     Actuator actuator) {
+    String[] parts = newValue.split("\\b(on|off)\\b");
+    String staticPart = parts[0];
+    String statePart = actuator.isOn() ? "on" : "off";
+
+    staticText.setText(staticPart);
+    dynamicText.setText(statePart);
+
+    if (actuator.isOn()) {
+      dynamicText.setStyle("-fx-fill: green;");
+    } else {
+      dynamicText.setStyle("-fx-fill: red;");
+    }
   }
 
   private String generateActuatorText(Actuator actuator) {
-    String onOff = actuator.isOn() ? "ON" : "off";
+    String onOff = actuator.isOn() ? "on" : "off";
     return actuator.getType() + ": " + onOff;
   }
 
