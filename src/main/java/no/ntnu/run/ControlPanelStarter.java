@@ -1,8 +1,6 @@
 package no.ntnu.run;
 import java.util.ArrayList;
-import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.gui.controlpanel.TcpControlpanelNodeClient;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
@@ -58,33 +56,5 @@ public class ControlPanelStarter {
 
     });
     clientProcessor.start();
-  }
-
-  private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
-    // Here we pretend that some events will be received with a given delay
-    FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
-    logic.setCommunicationChannel(spawner);
-    final int START_DELAY = 5;
-    spawner.spawnNode("4;3_window", START_DELAY);
-    spawner.spawnNode("1", START_DELAY + 1);
-    spawner.spawnNode("1", START_DELAY + 2);
-    spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", START_DELAY + 2);
-    spawner.spawnNode("8;2_heater", START_DELAY + 3);
-    spawner.advertiseActuatorState(4, 1, true, START_DELAY + 3);
-    spawner.advertiseActuatorState(4, 1, false, START_DELAY + 4);
-    spawner.advertiseActuatorState(4, 1, true, START_DELAY + 5);
-    spawner.advertiseActuatorState(4, 2, true, START_DELAY + 5);
-    spawner.advertiseActuatorState(4, 1, false, START_DELAY + 6);
-    spawner.advertiseActuatorState(4, 2, false, START_DELAY + 6);
-    spawner.advertiseActuatorState(4, 1, true, START_DELAY + 7);
-    spawner.advertiseActuatorState(4, 2, true, START_DELAY + 8);
-    spawner.advertiseSensorData("4;temperature=22.4 °C,temperature=26.0 °C,humidity=81 %", START_DELAY + 9);
-    spawner.advertiseSensorData("1;humidity=80 %,humidity=82 %", START_DELAY + 10);
-    spawner.advertiseRemovedNode(8, START_DELAY + 11);
-    spawner.advertiseRemovedNode(8, START_DELAY + 12);
-    spawner.advertiseSensorData("1;temperature=25.4 °C,temperature=27.0 °C,humidity=67 %", START_DELAY + 13);
-    spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", START_DELAY + 14);
-    spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", START_DELAY + 16);
-    return spawner;
   }
 }

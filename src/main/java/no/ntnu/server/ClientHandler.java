@@ -70,6 +70,9 @@ public class ClientHandler extends Thread {
             case "nodeAdded":
                 server.sendMessageToControlPanels(inputLine);
                 break;
+            case "actuatorUpdated":
+                server.sendMessageToControlPanels(inputLine);
+                break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));
         }

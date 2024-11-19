@@ -81,6 +81,9 @@ public class TcpControlpanelNodeClient {
       case "updateSensorData":
         advertiseSensorData(inputParts.get(1));
         break;
+      case "actuatorUpdated":
+        advertiseActuatorChange(inputParts.get(1));
+        break;
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
     }
@@ -199,6 +202,22 @@ public class TcpControlpanelNodeClient {
     }
   }
 
+
+  private void advertiseActuatorChange(String s) {
+    String[] parts = s.split(";");
+    if (parts.length != 2) {
+      throw new IllegalArgumentException("Invalid actuator change specification: " + s);
+    }
+    int nodeId = parseIntegerOrError(parts[0], "Invalid node ID: " + parts[0]);
+    String[] actuatorInfo = parts[1].split("=");
+    if (actuatorInfo.length != 2) {
+      throw new IllegalArgumentException("Invalid actuator info: " + parts[1]);
+    }
+    int actuatorId = parseIntegerOrError(actuatorInfo[0], "Invalid actuator ID: " + actuatorInfo[0]);
+    boolean isOn = Boolean.parseBoolean(actuatorInfo[1]);
+
+    sendActuatorChange(nodeId, actuatorId, isOn);
+  }
   private void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
     logic.onActuatorStateChanged(nodeId, actuatorId, isOn);
   }
