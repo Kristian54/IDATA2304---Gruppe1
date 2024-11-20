@@ -32,6 +32,7 @@ public class MainGreenhouseGuiWindow extends Scene {
     Button closeButton = new Button("Close Greenhouse Simulator");
     closeButton.setOnAction(event -> {
       javafx.application.Platform.exit();
+      System.exit(0);
     });
     return closeButton;
   }

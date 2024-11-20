@@ -12,7 +12,7 @@ public class DeviceFactory {
   private static final double MAX_HUMIDITY = 100;
   private static final double NORMAL_GREENHOUSE_HUMIDITY = 80;
   private static final String HUMIDITY_UNIT = "%";
-  private static final String SENSOR_TYPE_TEMPERATURE = "temperature";
+  private static final String SENSOR_TYPE_TEMPERATURE = "Temperature";
 
   private static int nextNodeId = 1;
 
@@ -83,7 +83,7 @@ public class DeviceFactory {
    * @return A typical humidity sensor which can be used as a template
    */
   public static Sensor createHumiditySensor() {
-    return new Sensor("humidity", MIN_HUMIDITY, MAX_HUMIDITY,
+    return new Sensor("Humidity", MIN_HUMIDITY, MAX_HUMIDITY,
         randomize(NORMAL_GREENHOUSE_HUMIDITY, 5.0), HUMIDITY_UNIT);
   }
 
@@ -94,9 +94,9 @@ public class DeviceFactory {
    * @return The window actuator
    */
   public static Actuator createWindow(int nodeId) {
-    Actuator actuator = new Actuator("window", nodeId);
+    Actuator actuator = new Actuator("Window", nodeId);
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, -5.0);
-    actuator.setImpact("humidity", -10.0);
+    actuator.setImpact("Humidity", -10.0);
     return actuator;
   }
 
@@ -107,7 +107,7 @@ public class DeviceFactory {
    * @return The fan actuator
    */
   public static Actuator createFan(int nodeId) {
-    Actuator actuator = new Actuator("fan", nodeId);
+    Actuator actuator = new Actuator("Fan", nodeId);
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, -1.0);
     return actuator;
   }
@@ -119,7 +119,7 @@ public class DeviceFactory {
    * @return The heater actuator
    */
   public static Actuator createHeater(int nodeId) {
-    Actuator actuator = new Actuator("heater", nodeId);
+    Actuator actuator = new Actuator("Heater", nodeId);
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, 4.0);
     return actuator;
   }
