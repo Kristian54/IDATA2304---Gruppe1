@@ -16,8 +16,9 @@ import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
+import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 
-public class TcpControlpanelNodeClient {
+public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   ControlPanelLogic logic;
   String ip;
   int port;
@@ -33,6 +34,7 @@ public class TcpControlpanelNodeClient {
     this.logic = logic;
     this.ip = ip;
     this.port = port;
+    logic.addListener(this);
   }
 
   public void run() {
@@ -237,5 +239,26 @@ public class TcpControlpanelNodeClient {
       }
     }
     return sent;
+  }
+
+  @Override
+  public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
+
+  }
+
+  @Override
+  public void onNodeRemoved(int nodeId) {
+
+  }
+
+  @Override
+  public void onSensorData(int nodeId, List<SensorReading> sensors) {
+
+  }
+
+  @Override
+  public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("actuatorUpdated-");
   }
 }

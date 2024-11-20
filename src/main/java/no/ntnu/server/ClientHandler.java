@@ -72,10 +72,17 @@ public class ClientHandler extends Thread {
                 break;
             case "actuatorUpdated":
                 server.sendMessageToControlPanels(inputLine);
+                server.sendMessageToSensorActuatorNode(inputLine);
                 break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));
         }
+    }
+
+    private int extractNodeId(String input) {
+        String[] parts = input.split("-");
+        if (parts.length < 2) throw new IllegalArgumentException("Invalid input");
+
     }
 
     private void setNodeType(String nodeType) {

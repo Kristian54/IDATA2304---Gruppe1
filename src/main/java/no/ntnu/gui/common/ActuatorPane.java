@@ -74,7 +74,7 @@ public class ActuatorPane extends TitledPane {
   }
 
   private String generateActuatorText(Actuator actuator) {
-    String onOff = actuator.isOn() ? "ON" : "off";
+    String onOff = actuator.isOn() ? "ON" : "OFF";
     return actuator.getType() + ": " + onOff;
   }
 

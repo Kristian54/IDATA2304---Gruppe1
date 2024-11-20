@@ -17,7 +17,6 @@ public class GreenhouseSimulator {
   private final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
   private final Map<Integer, TcpSensorActuatorNodeClient> nodeClients = new HashMap<>();
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
-  private final boolean fake;
 
   /**
    * Create a greenhouse simulator.
@@ -25,8 +24,7 @@ public class GreenhouseSimulator {
    * @param fake When true, simulate a fake periodic events instead of creating
    *             socket communication
    */
-  public GreenhouseSimulator(boolean fake) {
-    this.fake = fake;
+  public GreenhouseSimulator() {
   }
 
   /**
@@ -42,9 +40,7 @@ public class GreenhouseSimulator {
     SensorActuatorNode node = DeviceFactory.createNode(
         temperature, humidity, windows, fans, heaters);
     nodes.put(node.getId(), node);
-    if (!fake) {
-      initiateTcpNodeClient(node);
-    }
+    initiateTcpNodeClient(node);
   }
 
   private void initiateTcpNodeClient(SensorActuatorNode node) {
@@ -64,7 +60,6 @@ public class GreenhouseSimulator {
    * Start a simulation of a greenhouse - all the sensor and actuator nodes inside it.
    */
   public void start() {
-    initiateCommunication();
     for (SensorActuatorNode node : nodes.values()) {
       node.start();
     }
@@ -73,16 +68,6 @@ public class GreenhouseSimulator {
     }
 
     Logger.info("Simulator started");
-  }
-
-  private void initiateCommunication() {
-   Runnable action = fake ? this::initiateFakePeriodicSwitches : this::initiateRealCommunication;
-   action.run();
-  }
-
-  private void initiateRealCommunication() {
-    // TODO - here you can set up the TCP or UDP communication
-    // Sett opp TCPServer i denne metoden
   }
 
   private void initiateFakePeriodicSwitches() {
@@ -101,13 +86,7 @@ public class GreenhouseSimulator {
   }
 
   private void stopCommunication() {
-    if (fake) {
-      for (PeriodicSwitch periodicSwitch : periodicSwitches) {
-        periodicSwitch.stop();
-      }
-    } else {
-      nodeClients.forEach((id, client) -> client.stop());
-    }
+    nodeClients.forEach((id, client) -> client.stop());
   }
 
   /**

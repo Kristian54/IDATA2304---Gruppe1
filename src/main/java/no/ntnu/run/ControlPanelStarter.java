@@ -11,11 +11,9 @@ import no.ntnu.tools.Logger;
  * debugger (JavaFX modules not found)
  */
 public class ControlPanelStarter {
-  private final boolean fake;
   private final ArrayList<TcpControlpanelNodeClient> nodeClients = new ArrayList<>();
 
-  public ControlPanelStarter(boolean fake) {
-    this.fake = fake;
+  public ControlPanelStarter() {
   }
 
   /**
@@ -33,11 +31,11 @@ public class ControlPanelStarter {
       Logger.info("Using FAKE events");
     }
 
-    ControlPanelStarter starter = new ControlPanelStarter(fake);
+    ControlPanelStarter starter = new ControlPanelStarter();
     starter.start();
   }
 
-  private void start() {
+  public void start() {
     ControlPanelLogic logic = new ControlPanelLogic();
     initiateCommunication(logic);
     ControlPanelApplication.startApp(logic);
