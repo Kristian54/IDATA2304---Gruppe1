@@ -72,7 +72,9 @@ public class ClientHandler extends Thread {
                 break;
             case "actuatorUpdated":
                 server.sendMessageToControlPanels(inputLine);
-                server.sendMessageToSensorActuatorNode(inputLine);
+                break;
+            case "controlPanelUpdateActuator":
+                server.sendMessageToSensorActuatorNode(inputLine, extractNodeId(inputLine));
                 break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));
@@ -82,7 +84,14 @@ public class ClientHandler extends Thread {
     private int extractNodeId(String input) {
         String[] parts = input.split("-");
         if (parts.length < 2) throw new IllegalArgumentException("Invalid input");
+        int id;
+        try {
+            id =  Integer.parseInt(parts[1].split(";")[0]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
+        return id;
     }
 
     private void setNodeType(String nodeType) {

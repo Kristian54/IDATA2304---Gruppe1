@@ -48,7 +48,39 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sendNodeActuatorData();
 
     while (running) {
+      recieveCommand();
     }
+  }
+
+  private void recieveCommand() {
+    try {
+      String command = reader.readLine();
+      if (command != null) {
+        handleInput(command);
+      }
+    } catch (Exception e) {
+      System.out.println("Error reading command: " + e.getMessage());
+    }
+  }
+
+  private void handleInput(String command) {
+    System.out.println("Received: " + command);
+    String[] parts = command.split("-");
+    switch (parts[0]) {
+      case "controlPanelUpdateActuator":
+        updateNode(parts[1]);
+        break;
+      default:
+        throw new RuntimeException("Unknown command: " + command);
+    }
+  }
+
+  private void updateNode(String command) {
+    String[] parts = command.split(";");
+    String[] actuatorParts = parts[1].split("=");
+    int actuatorId = Integer.parseInt(actuatorParts[0]);
+    boolean isOn = Boolean.parseBoolean(actuatorParts[1]);
+    node.setActuator(actuatorId, isOn);
   }
 
   private void sendId() {

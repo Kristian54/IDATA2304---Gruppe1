@@ -259,6 +259,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
     StringBuilder sb = new StringBuilder();
-    sb.append("actuatorUpdated-");
+    sb.append("controlPanelUpdateActuator-");
+    sb.append(nodeId);
+    sb.append(";");
+    sb.append(actuatorId);
+    sb.append("=");
+    sb.append(isOn);
+    sendCommand(sb.toString());
   }
 }
