@@ -108,6 +108,7 @@ public class ClientHandler extends Thread {
     public void sendToClient(String message) {
         if (socketWriter != null) {
             socketWriter.println(message);
+            System.out.println("Sent: " + message);
         }
     }
 
