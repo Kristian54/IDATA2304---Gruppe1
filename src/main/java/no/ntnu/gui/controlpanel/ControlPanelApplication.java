@@ -45,7 +45,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    * Note - this is a workaround to avoid problems with JavaFX not finding the modules!
    * We need to use another wrapper-class for the debugger to work.
    *
-   * @param logic   The logic of the control panel node
+   * @param logic The logic of the control panel node
    */
   public static void startApp(ControlPanelLogic logic) {
     if (logic == null) {
@@ -163,6 +163,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     if (nodeTab == null) {
       nodeInfos.put(nodeInfo.getId(), nodeInfo);
       nodeTabPane.getTabs().add(createNodeTab(nodeInfo));
+      nodeTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     } else {
       Logger.info("Duplicate node spawned, ignore it");
     }
