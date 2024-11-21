@@ -52,6 +52,9 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     }
   }
 
+  /**
+   * Receives a command from the server.
+   */
   private void recieveCommand() {
     try {
       String command = reader.readLine();
@@ -63,6 +66,11 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     }
   }
 
+  /**
+   * Handles the input from the server.
+   *
+   * @param command The command to handle
+   */
   private void handleInput(String command) {
     System.out.println("Received: " + command);
     String[] parts = command.split("-");
@@ -75,6 +83,11 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     }
   }
 
+  /**
+   * Updates the node based on the command.
+   *
+   * @param command The command to update the node with
+   */
   private void updateNode(String command) {
     String[] parts = command.split(";");
     String[] actuatorParts = parts[1].split("=");
@@ -83,14 +96,23 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     node.setActuator(actuatorId, isOn);
   }
 
+  /**
+   * Sends the ID of the node to the server.
+   */
   private void sendId() {
     sendCommand("setId-" + node.getId());
   }
 
+  /**
+   * Sends the type of the node to the server.
+   */
   private void sendNodeType() {
     sendCommand("setNodeType-" + "SensorActuator");
   }
 
+  /**
+   * Sends the actuator data of the node to the server.
+   */
   private void sendNodeActuatorData() {
     StringBuilder sb = new StringBuilder();
     sb.append("nodeAdded-");
@@ -108,6 +130,9 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sendCommand(sb.toString());
   }
 
+  /**
+   * Sends the updated sensor data to the server.
+   */
   private void sendUpdatedSensorData() {
     StringBuilder builder = new StringBuilder();
     builder.append("updateSensorData-");
@@ -126,6 +151,12 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sendCommand(builder.toString());
   }
 
+  /**
+   * Maps the actuators to their respective counts.
+   *
+   * @param actuators The actuators to map
+   * @return A map of the actuators and their counts
+   */
   private static Map<Integer, String> mapActuators(ActuatorCollection actuators) {
     Map<Integer, String> actuatorCounts = new HashMap<>();
 
@@ -205,11 +236,19 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
   }
 
 
+  /**
+   * Sends the updated actuator data to the server.
+   */
   @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
     sendActuatorUpdate(actuator);
   }
 
+  /**
+   * Sends the updated actuator data to the server.
+   *
+   * @param actuator The actuator to send the update for
+   */
   private void sendActuatorUpdate(Actuator actuator) {
     StringBuilder builder = new StringBuilder();
     builder.append("actuatorUpdated-");

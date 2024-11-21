@@ -9,6 +9,10 @@ import no.ntnu.tools.Logger;
  * A collection of actuators of different types.
  */
 public class ActuatorCollection implements Iterable<Actuator> {
+
+  /**
+   * The actuators stored in this collection. The key is the ID of the actuator.
+   */
   private final Map<Integer, Actuator> actuators = new HashMap<>();
 
   /**
@@ -40,6 +44,11 @@ public class ActuatorCollection implements Iterable<Actuator> {
     return actuators.get(id);
   }
 
+  /**
+   * Returns an iterator over the actuators in this collection.
+   *
+   * @return An iterator over the actuators in this collection
+   */
   @Override
   public Iterator<Actuator> iterator() {
     return actuators.values().iterator();

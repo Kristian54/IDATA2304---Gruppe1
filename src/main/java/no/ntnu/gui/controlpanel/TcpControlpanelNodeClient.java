@@ -18,6 +18,9 @@ import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 
+/**
+ * A TCP client for a control panel node.
+ */
 public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   ControlPanelLogic logic;
   String ip;
@@ -27,6 +30,13 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   BufferedReader reader;
   boolean running;
 
+  /**
+   * Create a new TCP client for a control panel node.
+   *
+   * @param ip    The IP address of the server
+   * @param port  The port number of the server
+   * @param logic The logic of the control panel
+   */
   public TcpControlpanelNodeClient(String ip, int port, ControlPanelLogic logic) {
     if (logic == null) throw new IllegalArgumentException("Logic cannot be null");
     if (ip == null) throw new IllegalArgumentException("IP Address cannot be null");
@@ -37,6 +47,9 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     logic.addListener(this);
   }
 
+  /**
+   * Starts the TCP client and connects to the server.
+   */
   public void run() {
     startConnection();
     running = true;
@@ -52,6 +65,9 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     }
   }
 
+  /**
+   * Starts the connection to the server.
+   */
   private void startConnection() {
     try {
       socket = new Socket(ip, port);
@@ -62,6 +78,9 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     }
   }
 
+  /**
+   * Receives a command from the server.
+   */
   private void recieveCommand() {
     try {
       String command = reader.readLine();
@@ -73,6 +92,11 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     }
   }
 
+  /**
+   * Handles the input from the server.
+   *
+   * @param inputLine The input to handle
+   */
   private void handleInput(String inputLine) {
     System.out.println("Received: " + inputLine);
     List<String> inputParts = List.of(inputLine.split("-"));
@@ -122,6 +146,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     }, 1000L);
   }
 
+  /**
+   * Parse the sensor readings from the specification.
+   *
+   * @param sensorInfo The sensor information to parse
+   * @return A list of sensor readings
+   */
   private List<SensorReading> parseSensors(String sensorInfo) {
     List<SensorReading> readings = new LinkedList<>();
     String[] readingInfo = sensorInfo.split(",");
@@ -131,6 +161,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     return readings;
   }
 
+  /**
+   * Parse a sensor reading from a string.
+   *
+   * @param reading The reading to parse
+   * @return A sensor reading
+   */
   private SensorReading parseReading(String reading) {
     String[] assignmentParts = reading.split("=");
     if (assignmentParts.length != 2) {
@@ -166,6 +202,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     },1000L);
   }
 
+  /**
+   * Create a sensor/actuator node information from a specification.
+   *
+   * @param specification The specification of the node
+   * @return A sensor/actuator node information
+   */
   private SensorActuatorNodeInfo createSensorNodeInfoFrom(String specification) {
     if (specification == null || specification.isEmpty()) {
       throw new IllegalArgumentException("Node specification can't be empty");
@@ -182,6 +224,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     return info;
   }
 
+  /**
+   * Parse the actuators from the specification.
+   *
+   * @param actuatorSpecification The actuator specification to parse
+   * @param info                  The sensor/actuator node information to update
+   */
   private void parseActuators(String actuatorSpecification, SensorActuatorNodeInfo info) {
     String[] parts = actuatorSpecification.split(" ");
     for (String part : parts) {
@@ -189,6 +237,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     }
   }
 
+  /**
+   * Parse the actuator information from a string.
+   *
+   * @param s    The actuator information to parse
+   * @param info The sensor/actuator node information to update
+   */
   private void parseActuatorInfo(String s, SensorActuatorNodeInfo info) {
     String[] actuatorInfo = s.split("_");
     if (actuatorInfo.length != 2) {
@@ -202,7 +256,12 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     info.addActuator(actuator);
   }
 
-
+ /**
+   * Advertise an actuator change.
+   *
+   * @param s The actuator change specification in the following format:
+   *          [nodeId] semicolon [actuatorId] equals [isOn]
+   */
   private void advertiseActuatorChange(String s) {
     String[] parts = s.split(";");
     if (parts.length != 2) {
@@ -241,21 +300,44 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     return sent;
   }
 
+  /**
+   * Called when a node has been added.
+   *
+   * @param nodeInfo Information about the added node
+   */
   @Override
   public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
 
   }
 
+  /**
+   * Called when a node has been removed.
+   *
+   * @param nodeId The ID of the removed node
+   */
   @Override
   public void onNodeRemoved(int nodeId) {
 
   }
 
+  /**
+   * Called when sensor data has been received.
+   *
+   * @param nodeId  The ID of the node that sent the data
+   * @param sensors The sensor readings
+   */
   @Override
   public void onSensorData(int nodeId, List<SensorReading> sensors) {
 
   }
 
+  /**
+   * Called when an actuator has changed its state.
+   *
+   * @param nodeId   The ID of the node on which the actuator is placed
+   * @param actuatorId The ID of the actuator that has changed its state
+   * @param isOn     The new state of the actuator
+   */
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
     StringBuilder sb = new StringBuilder();

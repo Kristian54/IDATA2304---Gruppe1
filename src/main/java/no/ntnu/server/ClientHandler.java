@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 
+/**
+ * The class that handles the communication between the server and a client.
+ */
 public class ClientHandler extends Thread {
     private final Socket clientSocket;
     private final TCPServer server;
@@ -17,6 +20,15 @@ public class ClientHandler extends Thread {
     private final BufferedReader socketReader;
     private final PrintWriter socketWriter;
 
+    /**
+     * Create a new client handler.
+     *
+     * @param clientSocket The socket to the client
+     * @param server       The server
+     * @throws IOException If an I/O error occurs when creating the input or output stream, the socket is closed,
+     *                     the socket is not connected, or the socket input has been shutdown using shutdownInput(),
+     *                     or the socket output has been shutdown using shutdownOutput().
+     */
     public ClientHandler(Socket clientSocket, TCPServer server) throws IOException {
         if (clientSocket == null || server == null) {
             throw new IllegalArgumentException("Socket, server or node type cannot be null");
@@ -28,6 +40,9 @@ public class ClientHandler extends Thread {
         socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
     }
 
+    /**
+     * Run the client handler.
+     */
     @Override
     public void run() {
         this.running = true;
@@ -38,6 +53,9 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Receive a command from the client (TCP socket).
+     */
     private void receiveCommand() {
         try {
             String command = socketReader.readLine();
@@ -81,6 +99,12 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Extract the node ID from the input string.
+     *
+     * @param input The input string
+     * @return The node ID
+     */
     private int extractNodeId(String input) {
         String[] parts = input.split("-");
         if (parts.length < 2) throw new IllegalArgumentException("Invalid input");
@@ -94,6 +118,11 @@ public class ClientHandler extends Thread {
         return id;
     }
 
+    /**
+     * Set the node type.
+     *
+     * @param nodeType The node type
+     */
     private void setNodeType(String nodeType) {
         if (nodeType.equals("SensorActuator")) {
             this.nodeType = NodeType.SENSORACTUATOR;
@@ -102,6 +131,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Set the ID of the node.
+     *
+     * @param id The ID of the node
+     */
     private void setId(String id) {
         try {
             int iD = Integer.parseInt(id);
@@ -128,14 +162,27 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Returns the node type.
+     *
+     * @return The node type
+     */
     public NodeType getNodeType() {
         return nodeType;
     }
 
+    /**
+     * Returns the ID of the node.
+     *
+     * @return The ID of the node
+     */
     public int getHandlerId() {
         return id;
     }
 
+    /**
+     * Stop the handler.
+     */
     public void stopHandler() {
         this.running = false;
     }

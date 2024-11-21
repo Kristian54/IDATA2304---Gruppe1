@@ -14,15 +14,24 @@ import no.ntnu.tools.Logger;
  * Application entrypoint - a simulator for a greenhouse.
  */
 public class GreenhouseSimulator {
+
+  /**
+   * The nodes in the greenhouse.
+   */
   private final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
+
+  /**
+   * The clients for the nodes in the greenhouse.
+   */
   private final Map<Integer, TcpSensorActuatorNodeClient> nodeClients = new HashMap<>();
+
+  /**
+   * The listeners for the sensors in the greenhouse.
+   */
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
 
   /**
    * Create a greenhouse simulator.
-   *
-   * @param fake When true, simulate a fake periodic events instead of creating
-   *             socket communication
    */
   public GreenhouseSimulator() {
   }
@@ -36,6 +45,15 @@ public class GreenhouseSimulator {
     Logger.info("Greenhouse initialized");
   }
 
+  /**
+   * Create a sensor/actuator node with given parameters.
+   *
+   * @param temperature The temperature sensor value
+   * @param humidity    The humidity sensor value
+   * @param windows     The number of windows
+   * @param fans        The number of fans
+   * @param heaters     The number of heaters
+   */
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
     SensorActuatorNode node = DeviceFactory.createNode(
         temperature, humidity, windows, fans, heaters);
@@ -43,6 +61,12 @@ public class GreenhouseSimulator {
     initiateTcpNodeClient(node);
   }
 
+
+  /**
+   * Create a TCP client for a sensor/actuator node.
+   *
+   * @param node The node to create a client for
+   */
   private void initiateTcpNodeClient(SensorActuatorNode node) {
     Thread clientProcessor = new Thread(() -> {
       TcpSensorActuatorNodeClient client = new TcpSensorActuatorNodeClient("127.0.0.1", 10020, node);
@@ -70,11 +94,6 @@ public class GreenhouseSimulator {
     Logger.info("Simulator started");
   }
 
-  private void initiateFakePeriodicSwitches() {
-    periodicSwitches.add(new PeriodicSwitch("Window DJ", nodes.get(1), 2, 20000));
-    periodicSwitches.add(new PeriodicSwitch("Heater DJ", nodes.get(2), 7, 8000));
-  }
-
   /**
    * Stop the simulation of the greenhouse - all the nodes in it.
    */
@@ -85,6 +104,9 @@ public class GreenhouseSimulator {
     }
   }
 
+  /**
+   * Add a listener for greenhouse events.
+   */
   private void stopCommunication() {
     nodeClients.forEach((id, client) -> client.stop());
   }
