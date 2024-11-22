@@ -88,6 +88,9 @@ public class ClientHandler extends Thread {
             case "nodeAdded":
                 server.sendMessageToControlPanels(inputLine);
                 break;
+            case "controlPanelAdded":
+                server.sendMessageToSensorActuatorNodes(inputLine);
+                break;
             case "actuatorUpdated":
                 server.sendMessageToControlPanels(inputLine);
                 break;

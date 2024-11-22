@@ -54,6 +54,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     startConnection();
     running = true;
     sendCommand("setNodeType-ControlPanel");
+    sendCommand("controlPanelAdded");
 
     while (running) {
       recieveCommand();

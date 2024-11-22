@@ -78,6 +78,9 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
       case "controlPanelUpdateActuator":
         updateNode(parts[1]);
         break;
+      case "controlPanelAdded":
+        sendNodeActuatorData();
+        break;
       default:
         throw new RuntimeException("Unknown command: " + command);
     }

@@ -87,6 +87,19 @@ public class TCPServer {
   }
 
   /**
+   * Sends a message to a single control panel client.
+   *
+   * @param message The message to send
+   */
+  public void sendMessageToSensorActuatorNodes(String message) {
+    for (ClientHandler clientHandler : clientsHandlers) {
+      if (clientHandler.getNodeType().equals(NodeType.SENSORACTUATOR)) {
+        clientHandler.sendToClient(message);
+      }
+    }
+  }
+
+  /**
    * Sends a message to a single sensor/actuator node.
    *
    * @param message The message to send
@@ -99,6 +112,7 @@ public class TCPServer {
       }
     }
   }
+
 
   /**
    * Stops the server.
