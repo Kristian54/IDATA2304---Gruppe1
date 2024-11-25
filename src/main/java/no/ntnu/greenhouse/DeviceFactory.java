@@ -12,7 +12,7 @@ public class DeviceFactory {
   private static final double MAX_HUMIDITY = 100;
   private static final double NORMAL_GREENHOUSE_HUMIDITY = 80;
   private static final String HUMIDITY_UNIT = "%";
-  private static final String SENSOR_TYPE_TEMPERATURE = "temperature";
+  private static final String SENSOR_TYPE_TEMPERATURE = "Temperature";
 
   private static int nextNodeId = 1;
 

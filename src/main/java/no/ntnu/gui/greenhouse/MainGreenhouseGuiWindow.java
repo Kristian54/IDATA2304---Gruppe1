@@ -25,7 +25,7 @@ public class MainGreenhouseGuiWindow extends Scene {
   }
 
   private static Parent createMainContent(GreenhouseSimulator simulator) {
-    VBox container = new VBox(createCloseButton(), addNewNodeButton(simulator));
+    VBox container = new VBox(addNewNodeButton(simulator), createCloseButton());
     container.setPadding(new Insets(20));
     container.setAlignment(Pos.CENTER);
     container.setSpacing(5);
@@ -33,7 +33,8 @@ public class MainGreenhouseGuiWindow extends Scene {
   }
 
   private static Node addNewNodeButton(GreenhouseSimulator simulator) {
-    Button addNewNodeButton = new Button("Add new node");
+    Button addNewNodeButton = new Button("+ Add new node");
+    addNewNodeButton.setPrefWidth(200);
     Random random = new Random();
     addNewNodeButton.setOnAction(event -> {
       int[] randomValues = random.ints(5, 1, 4).toArray();
@@ -55,6 +56,7 @@ public class MainGreenhouseGuiWindow extends Scene {
 
   private static Node createCloseButton() {
     Button closeButton = new Button("Close Greenhouse Simulator");
+    closeButton.setPrefWidth(200);
     closeButton.setOnAction(event -> {
       javafx.application.Platform.exit();
       System.exit(0);
