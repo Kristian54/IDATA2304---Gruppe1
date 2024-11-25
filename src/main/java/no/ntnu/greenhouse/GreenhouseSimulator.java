@@ -54,11 +54,13 @@ public class GreenhouseSimulator {
    * @param fans        The number of fans
    * @param heaters     The number of heaters
    */
-  private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
+  public SensorActuatorNode createNode(int temperature, int humidity, int windows, int fans,
+                                       int heaters) {
     SensorActuatorNode node = DeviceFactory.createNode(
         temperature, humidity, windows, fans, heaters);
     nodes.put(node.getId(), node);
     initiateTcpNodeClient(node);
+    return node;
   }
 
 
@@ -69,10 +71,12 @@ public class GreenhouseSimulator {
    */
   private void initiateTcpNodeClient(SensorActuatorNode node) {
     Thread clientProcessor = new Thread(() -> {
-      TcpSensorActuatorNodeClient client = new TcpSensorActuatorNodeClient("127.0.0.1", 10020, node);
+      TcpSensorActuatorNodeClient client =
+          new TcpSensorActuatorNodeClient("127.0.0.1", 10020, node);
 
       nodeClients.put(node.getId(), client);
-      System.out.println("Client created for node " + node.getId() + " on " + Thread.currentThread().getName());
+      System.out.println(
+          "Client created for node " + node.getId() + " on " + Thread.currentThread().getName());
 
       client.run();
 

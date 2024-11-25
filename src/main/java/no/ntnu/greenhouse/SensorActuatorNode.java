@@ -274,7 +274,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
    * @param isReady When true, let them know that this node is ready;
    *                when false - that this node is shut down
    */
-  private void notifyStateChanges(boolean isReady) {
+  public void notifyStateChanges(boolean isReady) {
     Logger.info("Notify state changes for node " + id);
     System.out.println(isReady);
     for (NodeStateListener listener : stateListeners) {

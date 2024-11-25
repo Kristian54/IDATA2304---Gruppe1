@@ -24,7 +24,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   @Override
   public void start(Stage mainStage) {
     this.mainStage = mainStage;
-    mainStage.setScene(new MainGreenhouseGuiWindow());
+    mainStage.setScene(new MainGreenhouseGuiWindow(simulator));
     mainStage.setMinWidth(MainGreenhouseGuiWindow.WIDTH);
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
     mainStage.setTitle("Greenhouse simulator");
@@ -51,7 +51,6 @@ public class GreenhouseApplication extends Application implements NodeStateListe
 
   /**
    * Start the GUI Application.
-   *
    */
   public static void startApp() {
     Logger.info("Running greenhouse simulator with JavaFX GUI...");
