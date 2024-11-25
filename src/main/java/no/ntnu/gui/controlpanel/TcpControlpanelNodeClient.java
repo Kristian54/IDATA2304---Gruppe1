@@ -111,6 +111,10 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
       case "actuatorUpdated":
         advertiseActuatorChange(inputParts.get(1));
         break;
+      case "nodeRemoved":
+        int nodeId = parseIntegerOrError(inputParts.get(1), "Invalid node ID: " + inputParts.get(1));
+        logic.onNodeRemoved(nodeId);
+        break;
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
     }
@@ -308,7 +312,6 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    */
   @Override
   public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
-
   }
 
   /**
@@ -318,7 +321,6 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    */
   @Override
   public void onNodeRemoved(int nodeId) {
-
   }
 
   /**

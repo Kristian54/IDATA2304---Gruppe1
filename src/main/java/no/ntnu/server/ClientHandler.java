@@ -97,6 +97,10 @@ public class ClientHandler extends Thread {
             case "controlPanelUpdateActuator":
                 server.sendMessageToSensorActuatorNode(inputLine, extractNodeId(inputLine));
                 break;
+            case "nodeRemoved":
+                server.sendMessageToControlPanels(inputLine);
+                running = false;
+                break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));
         }
