@@ -1,6 +1,7 @@
 package no.ntnu.gui.greenhouse;
 
 
+import java.util.Random;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,8 +34,13 @@ public class MainGreenhouseGuiWindow extends Scene {
 
   private static Node addNewNodeButton(GreenhouseSimulator simulator) {
     Button addNewNodeButton = new Button("Add new node");
+    Random random = new Random();
     addNewNodeButton.setOnAction(event -> {
-      SensorActuatorNode newNode = simulator.createNode(2, 1, 3, 2, 1);
+      int[] randomValues = random.ints(5, 1, 4).toArray();
+      System.out.println(randomValues);
+      SensorActuatorNode newNode =
+          simulator.createNode(randomValues[0], randomValues[1], randomValues[2], randomValues[3],
+              randomValues[4]);
       newNode.start();
       openNodeGuiWindow(newNode);
     });
