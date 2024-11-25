@@ -53,29 +53,35 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   public void run() {
     startConnection();
     running = true;
-    sendCommand("setNodeType-ControlPanel");
-    sendCommand("controlPanelAdded");
-
     while (running) {
       recieveCommand();
-      try {
-        Thread.sleep(0);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
     }
   }
 
   /**
-   * Starts the connection to the server.
+   * Starts the connection or reconnects to the server.
    */
   private void startConnection() {
-    try {
-      socket = new Socket(ip, port);
-      writer = new PrintWriter(socket.getOutputStream(), true);
-      reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    } catch (IOException e) {
-      throw new RuntimeException("Error connecting to server", e);
+    boolean connected = false;
+    while (!connected) {
+      try {
+        if (socket != null) {
+          socket.close();
+          System.out.println("Attempting reconnect");
+        }
+        Thread.sleep(2000);
+        socket = new Socket(ip, port);
+        writer = new PrintWriter(socket.getOutputStream(), true);
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        sendCommand("setNodeType-ControlPanel");
+        sendCommand("controlPanelAdded");
+        connected = true;
+        System.out.println("Connected to the server.");
+      } catch (IOException e) {
+        System.out.println("Error connecting to server: " + e.getMessage());
+      } catch (InterruptedException e) {
+        System.out.println("Error sleeping: " + e.getMessage());
+      }
     }
   }
 
@@ -88,8 +94,11 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
       if (command != null) {
         handleInput(command);
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.out.println("Error reading command: " + e.getMessage());
+      if (running) {
+        startConnection();
+      }
     }
   }
 
@@ -357,11 +366,11 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    * Stops the client.
    */
   public void stop() {
-      try {
-          socket.close();
-      } catch (IOException e) {
-          throw new RuntimeException(e);
-      }
-      this.running = false;
+    this.running = false;
+    try {
+        socket.close();
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
   }
 }

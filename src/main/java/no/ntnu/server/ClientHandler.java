@@ -65,8 +65,9 @@ public class ClientHandler extends Thread {
             if (command != null) {
                 handleInput(command);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error reading command: " + e.getMessage());
+            this.running = false;
         }
     }
 
@@ -103,6 +104,8 @@ public class ClientHandler extends Thread {
             case "nodeRemoved":
                 server.sendMessageToControlPanels(inputLine);
                 running = false;
+                break;
+            case "checkConnection":
                 break;
             default:
                 System.out.println("Unknown command: " + inputParts.get(0));

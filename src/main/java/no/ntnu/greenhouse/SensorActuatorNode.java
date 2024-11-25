@@ -276,13 +276,18 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
    */
   public void notifyStateChanges(boolean isReady) {
     Logger.info("Notify state changes for node " + id);
-    for (NodeStateListener listener : stateListeners) {
-      if (isReady) {
-        listener.onNodeReady(this);
-      } else {
-        listener.onNodeStopped(this);
+    try {
+      for (NodeStateListener listener : stateListeners) {
+        if (isReady) {
+          listener.onNodeReady(this);
+        } else {
+          listener.onNodeStopped(this);
+        }
       }
+    } catch (Exception e) {
+      Logger.error("Error notifying state changes: " + e.getMessage());
     }
+
   }
 
   /**
