@@ -352,4 +352,16 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     sb.append(isOn);
     sendCommand(sb.toString());
   }
+
+  /**
+   * Stops the client.
+   */
+  public void stop() {
+      try {
+          socket.close();
+      } catch (IOException e) {
+          throw new RuntimeException(e);
+      }
+      this.running = false;
+  }
 }

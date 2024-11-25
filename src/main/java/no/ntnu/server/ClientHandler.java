@@ -49,6 +49,9 @@ public class ClientHandler extends Thread {
         System.out.println("Processing client on thread: " + Thread.currentThread().getName());
 
         while (this.running) {
+            if (clientSocket.isClosed()) {
+                this.running = false;
+            }
             receiveCommand();
         }
     }

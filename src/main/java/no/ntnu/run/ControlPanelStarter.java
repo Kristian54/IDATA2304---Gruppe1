@@ -40,6 +40,9 @@ public class ControlPanelStarter {
     initiateCommunication(logic);
     ControlPanelApplication.startApp(logic);
     // This code is reached only after the GUI-window is closed
+    for (TcpControlpanelNodeClient client : nodeClients) {
+      client.stop();
+    }
     Logger.info("Exiting the control panel application");
   }
 
