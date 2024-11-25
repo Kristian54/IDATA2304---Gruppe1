@@ -53,6 +53,13 @@ public class DeviceFactory {
     return node;
   }
 
+  /**
+   * Add a number of actuators to a sensor/actuator node.
+   *
+   * @param node     The node to which the actuators will be added
+   * @param template The template actuator to clone
+   * @param n        The number of actuators to add
+   */
   static void addActuators(SensorActuatorNode node, Actuator template, int n) {
     if (template == null) {
       throw new IllegalArgumentException("Actuator template is missing");
@@ -83,7 +90,7 @@ public class DeviceFactory {
    * @return A typical humidity sensor which can be used as a template
    */
   public static Sensor createHumiditySensor() {
-    return new Sensor("humidity", MIN_HUMIDITY, MAX_HUMIDITY,
+    return new Sensor("Humidity", MIN_HUMIDITY, MAX_HUMIDITY,
         randomize(NORMAL_GREENHOUSE_HUMIDITY, 5.0), HUMIDITY_UNIT);
   }
 
@@ -94,7 +101,7 @@ public class DeviceFactory {
    * @return The window actuator
    */
   public static Actuator createWindow(int nodeId) {
-    Actuator actuator = new Actuator("window", nodeId);
+    Actuator actuator = new Actuator("Window", nodeId);
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, -5.0);
     actuator.setImpact("humidity", -10.0);
     return actuator;
@@ -107,7 +114,7 @@ public class DeviceFactory {
    * @return The fan actuator
    */
   public static Actuator createFan(int nodeId) {
-    Actuator actuator = new Actuator("fan", nodeId);
+    Actuator actuator = new Actuator("Fan", nodeId);
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, -1.0);
     return actuator;
   }
@@ -119,7 +126,7 @@ public class DeviceFactory {
    * @return The heater actuator
    */
   public static Actuator createHeater(int nodeId) {
-    Actuator actuator = new Actuator("heater", nodeId);
+    Actuator actuator = new Actuator("Heater", nodeId);
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, 4.0);
     return actuator;
   }

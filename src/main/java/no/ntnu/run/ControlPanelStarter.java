@@ -1,8 +1,7 @@
 package no.ntnu.run;
-import no.ntnu.controlpanel.CommunicationChannel;
+import java.util.ArrayList;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.FakeCommunicationChannel;
-import no.ntnu.controlpanel.TcpCommunicationChannel;
+import no.ntnu.gui.controlpanel.TcpControlpanelNodeClient;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
@@ -12,10 +11,9 @@ import no.ntnu.tools.Logger;
  * debugger (JavaFX modules not found)
  */
 public class ControlPanelStarter {
-  private final boolean fake;
+  private final ArrayList<TcpControlpanelNodeClient> nodeClients = new ArrayList<>();
 
-  public ControlPanelStarter(boolean fake) {
-    this.fake = fake;
+  public ControlPanelStarter() {
   }
 
   /**
@@ -33,58 +31,28 @@ public class ControlPanelStarter {
       Logger.info("Using FAKE events");
     }
 
-    ControlPanelStarter starter = new ControlPanelStarter(fake);
+    ControlPanelStarter starter = new ControlPanelStarter();
     starter.start();
   }
 
-  private void start() {
+  public void start() {
     ControlPanelLogic logic = new ControlPanelLogic();
-    CommunicationChannel channel = initiateCommunication(logic, fake);
-    ControlPanelApplication.startApp(logic, channel);
+    initiateCommunication(logic);
+    ControlPanelApplication.startApp(logic);
     // This code is reached only after the GUI-window is closed
     Logger.info("Exiting the control panel application");
   }
 
-  private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
-    CommunicationChannel channel;
-    if (fake) {
-      channel = initiateFakeSpawner(logic);
-    } else {
-      channel = initiateSocketCommunication(logic);
-    }
-    return channel;
-  }
+  private void initiateCommunication(ControlPanelLogic logic) {
+    Thread clientProcessor = new Thread(() -> {
+      TcpControlpanelNodeClient client = new TcpControlpanelNodeClient("127.0.0.1", 10020, logic);
 
-  private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-    TcpCommunicationChannel communicationChannel = new TcpCommunicationChannel(logic);
-    return communicationChannel;
-  }
+      nodeClients.add(client);
+      System.out.println("Client created for control panel on "+ Thread.currentThread().getName());
 
-  private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
-    // Here we pretend that some events will be received with a given delay
-    FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
-    logic.setCommunicationChannel(spawner);
-    final int START_DELAY = 5;
-    spawner.spawnNode("4;3_window", START_DELAY);
-    spawner.spawnNode("1", START_DELAY + 1);
-    spawner.spawnNode("1", START_DELAY + 2);
-    spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", START_DELAY + 2);
-    spawner.spawnNode("8;2_heater", START_DELAY + 3);
-    spawner.advertiseActuatorState(4, 1, true, START_DELAY + 3);
-    spawner.advertiseActuatorState(4, 1, false, START_DELAY + 4);
-    spawner.advertiseActuatorState(4, 1, true, START_DELAY + 5);
-    spawner.advertiseActuatorState(4, 2, true, START_DELAY + 5);
-    spawner.advertiseActuatorState(4, 1, false, START_DELAY + 6);
-    spawner.advertiseActuatorState(4, 2, false, START_DELAY + 6);
-    spawner.advertiseActuatorState(4, 1, true, START_DELAY + 7);
-    spawner.advertiseActuatorState(4, 2, true, START_DELAY + 8);
-    spawner.advertiseSensorData("4;temperature=22.4 °C,temperature=26.0 °C,humidity=81 %", START_DELAY + 9);
-    spawner.advertiseSensorData("1;humidity=80 %,humidity=82 %", START_DELAY + 10);
-    spawner.advertiseRemovedNode(8, START_DELAY + 11);
-    spawner.advertiseRemovedNode(8, START_DELAY + 12);
-    spawner.advertiseSensorData("1;temperature=25.4 °C,temperature=27.0 °C,humidity=67 %", START_DELAY + 13);
-    spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", START_DELAY + 14);
-    spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", START_DELAY + 16);
-    return spawner;
+      client.run();
+
+    });
+    clientProcessor.start();
   }
 }

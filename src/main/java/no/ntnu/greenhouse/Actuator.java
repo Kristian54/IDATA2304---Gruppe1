@@ -9,14 +9,40 @@ import no.ntnu.listeners.common.ActuatorListener;
  * sensors attached to this same node.
  */
 public class Actuator {
+
+  /**
+   * The next ID to be used when creating a new actuator.
+   */
   private static int nextId = 1;
+
+  /**
+   * The type of the actuator.
+   */
   private final String type;
+
+  /**
+   * The ID of the node to which this actuator is connected.
+   */
   private final int nodeId;
+
+  /**
+   * The unique ID of the actuator.
+   */
   private final int id;
+
+  /**
+   * The impacts of this actuator on the sensors.
+   */
   private Map<String, Double> impacts = new HashMap<>();
 
+  /**
+   * The listener which will be notified when actuator state changes.
+   */
   private ActuatorListener listener;
 
+  /**
+   * Whether the actuator is currently active (ON) or inactive (OFF).
+   */
   private boolean on;
 
   /**
@@ -73,6 +99,11 @@ public class Actuator {
     impacts.put(sensorType, diffWhenActive);
   }
 
+  /**
+   * Get the type of the actuator.
+   *
+   * @return The type of the actuator
+   */
   public String getType() {
     return type;
   }
@@ -129,6 +160,11 @@ public class Actuator {
     }
   }
 
+  /**
+   * Get the impacts of this actuator.
+   *
+   * @return The impacts of this actuator
+   */
   @Override
   public String toString() {
     return "Actuator{"
@@ -158,7 +194,7 @@ public class Actuator {
   }
 
   /**
-   * Get the ID of the actuator.
+   * Returns the ID of the actuator.
    *
    * @return An ID which is guaranteed to be unique at a node level, not necessarily unique at
    *     the whole greenhouse-network level.
@@ -167,6 +203,11 @@ public class Actuator {
     return id;
   }
 
+  /**
+   * Returns the ID of the node to which this actuator is connected.
+   *
+   * @return The ID of the node
+   */
   public int getNodeId() {
     return nodeId;
   }

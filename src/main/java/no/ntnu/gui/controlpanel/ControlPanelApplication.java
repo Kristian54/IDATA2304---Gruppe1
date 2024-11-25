@@ -45,26 +45,19 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    * Note - this is a workaround to avoid problems with JavaFX not finding the modules!
    * We need to use another wrapper-class for the debugger to work.
    *
-   * @param logic   The logic of the control panel node
-   * @param channel Communication channel for sending control commands and receiving events
+   * @param logic The logic of the control panel node
    */
-  public static void startApp(ControlPanelLogic logic, CommunicationChannel channel) {
+  public static void startApp(ControlPanelLogic logic) {
     if (logic == null) {
       throw new IllegalArgumentException("Control panel logic can't be null");
     }
     ControlPanelApplication.logic = logic;
-    ControlPanelApplication.channel = channel;
     Logger.info("Running control panel GUI...");
     launch();
   }
 
   @Override
   public void start(Stage stage) {
-    if (channel == null) {
-      throw new IllegalStateException(
-          "No communication channel. See the README on how to use fake event spawner!");
-    }
-
     stage.setMinWidth(WIDTH);
     stage.setMinHeight(HEIGHT);
     stage.setTitle("Control panel");
@@ -73,9 +66,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.show();
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
-    if (!channel.open()) {
-      logic.onCommunicationChannelClosed();
-    }
   }
 
   private static Label createEmptyContent() {
@@ -124,7 +114,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
-    String state = isOn ? "ON" : "off";
+    String state = isOn ? "ON" : "OFF";
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
     if (actuatorPane != null) {
@@ -173,6 +163,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     if (nodeTab == null) {
       nodeInfos.put(nodeInfo.getId(), nodeInfo);
       nodeTabPane.getTabs().add(createNodeTab(nodeInfo));
+      nodeTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     } else {
       Logger.info("Duplicate node spawned, ignore it");
     }
@@ -181,6 +172,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Tab createNodeTab(SensorActuatorNodeInfo nodeInfo) {
     Tab tab = new Tab("Node " + nodeInfo.getId());
     SensorPane sensorPane = createEmptySensorPane();
+    System.out.println("NodeInfo: " + nodeInfo.getId());
     sensorPanes.put(nodeInfo.getId(), sensorPane);
     ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
     actuatorPanes.put(nodeInfo.getId(), actuatorPane);

@@ -55,21 +55,44 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     }
   }
 
+  /**
+   * Notify all listeners that a new node has been added to the network.
+   *
+   * @param nodeInfo Information about the added node
+   */
   @Override
   public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
     listeners.forEach(listener -> listener.onNodeAdded(nodeInfo));
   }
 
+  /**
+   * Notify all listeners that a node has been removed from the network.
+   *
+   * @param nodeId The ID of the removed node
+   */
   @Override
   public void onNodeRemoved(int nodeId) {
     listeners.forEach(listener -> listener.onNodeRemoved(nodeId));
   }
 
+  /**
+   * Notify all listeners that a sensor reading has been received.
+   *
+   * @param nodeId The ID of the node that sent the reading
+   * @param sensors The list of sensor readings
+   */
   @Override
   public void onSensorData(int nodeId, List<SensorReading> sensors) {
     listeners.forEach(listener -> listener.onSensorData(nodeId, sensors));
   }
 
+  /**
+   * Notify all listeners that an actuator state has been changed.
+   *
+   * @param nodeId The ID of the node that sent the event
+   * @param actuatorId The ID of the actuator
+   * @param isOn The new state of the actuator
+   */
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
     listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));

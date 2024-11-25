@@ -18,6 +18,9 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private final Map<SensorActuatorNode, NodeGuiWindow> nodeWindows = new HashMap<>();
   private Stage mainStage;
 
+  /**
+   * Application entrypoint for the GUI of a greenhouse simulator.
+   */
   @Override
   public void start(Stage mainStage) {
     this.mainStage = mainStage;
@@ -33,6 +36,9 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     simulator.start();
   }
 
+  /**
+   * Close the application.
+   */
   private void closeApplication() {
     Logger.info("Closing Greenhouse application...");
     simulator.stop();
@@ -46,11 +52,10 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   /**
    * Start the GUI Application.
    *
-   * @param fake When true, emulate fake events instead of opening real sockets
    */
-  public static void startApp(boolean fake) {
+  public static void startApp() {
     Logger.info("Running greenhouse simulator with JavaFX GUI...");
-    simulator = new GreenhouseSimulator(fake);
+    simulator = new GreenhouseSimulator();
     launch();
   }
 

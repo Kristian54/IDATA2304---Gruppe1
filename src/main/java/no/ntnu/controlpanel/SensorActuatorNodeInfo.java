@@ -9,9 +9,21 @@ import no.ntnu.greenhouse.ActuatorCollection;
  */
 public class SensorActuatorNodeInfo {
 
+  /**
+   * The unique ID of the node.
+   */
   private final int nodeId;
+
+  /**
+   * The actuators of the node.
+   */
   private final ActuatorCollection actuators = new ActuatorCollection();
 
+  /**
+   * Create a new sensor/actuator node information object.
+   *
+   * @param nodeId The unique ID of the node
+   */
   public SensorActuatorNodeInfo(int nodeId) {
     this.nodeId = nodeId;
   }
