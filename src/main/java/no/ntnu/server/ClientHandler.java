@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * The class that handles the communication between the server and a client.
  */
-public class ClientHandler extends Thread {
+public class ClientHandler implements Runnable {
     private final Socket clientSocket;
     private final TCPServer server;
     private NodeType nodeType = NodeType.UNDEFINED;

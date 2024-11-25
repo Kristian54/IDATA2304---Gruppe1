@@ -11,9 +11,6 @@ public class CryptoDetails{
   protected static final SecretKey KEY;
   protected static final IvParameterSpec IV;
 
-  /**
-   * Generate a key and an initialization vector.
-   */
   static {
     try {
       KEY = CryptoHandler.generateKey(128);
