@@ -276,7 +276,6 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
    */
   public void notifyStateChanges(boolean isReady) {
     Logger.info("Notify state changes for node " + id);
-    System.out.println(isReady);
     for (NodeStateListener listener : stateListeners) {
       if (isReady) {
         listener.onNodeReady(this);

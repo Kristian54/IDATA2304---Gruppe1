@@ -35,6 +35,7 @@ public class MainGreenhouseGuiWindow extends Scene {
     Button addNewNodeButton = new Button("Add new node");
     addNewNodeButton.setOnAction(event -> {
       SensorActuatorNode newNode = simulator.createNode(2, 1, 3, 2, 1);
+      newNode.start();
       openNodeGuiWindow(newNode);
     });
     return addNewNodeButton;
