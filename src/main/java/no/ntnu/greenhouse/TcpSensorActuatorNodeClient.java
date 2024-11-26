@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class TcpSensorActuatorNodeClient
   private String ip;
   private int port;
   private final SensorActuatorNode node;
+  private boolean stopped = false;
 
   /**
    * Creates a new TCP client for a node to connect to a server.
@@ -52,24 +54,54 @@ public class TcpSensorActuatorNodeClient
   /** Starts the TCP client and connects to the server. */
   public void run() {
     startConnection();
-    sendId();
-    sendNodeType();
-    sendNodeActuatorData();
-
+    running = true;
     while (running) {
-      recieveCommand();
+      receiveCommand();
+    }
+  }
+
+  /**
+   * Starts the connection to the server or reconnects.
+   */
+  private void startConnection() {
+    boolean connected = false;
+    while (!connected && !stopped) {
+      try {
+        if (socket != null) {
+          socket.close();
+          System.out.println("Attempting reconnect");
+        }
+        Thread.sleep(2000);
+        this.socket = new Socket(this.ip, this.port);
+        this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+        this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        connected = true;
+        System.out.println(node.getId() + "connected to server");
+        sendId();
+        sendNodeType();
+        sendNodeActuatorData();
+      } catch (IOException e) {
+        System.out.println("Error connecting to server");
+      } catch (InterruptedException e) {
+        System.out.println("Error sleeping thread");
+      }
     }
   }
 
   /** Receives a command from the server. */
-  private void recieveCommand() {
+  private void receiveCommand() {
     try {
       String command = reader.readLine();
       if (command != null) {
         handleInput(command);
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.out.println("Error reading command: " + e.getMessage());
+      if (running) {
+        startConnection();
+      }
+    } catch (NullPointerException e) {
+      System.out.println("Reader is null");
     }
   }
 
@@ -170,44 +202,10 @@ public class TcpSensorActuatorNodeClient
     return actuatorCounts;
   }
 
-  /**
-   * Starts the conections to the server.
-   *
-   * @throws IOException Upon failure to connect to the server
-   */
-  private void startConnection() {
-    try {
-      this.socket = new Socket(this.ip, this.port);
-      this.writer = new PrintWriter(this.socket.getOutputStream(), true);
-      this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-      this.running = true;
-    } catch (IOException e) {
-      System.out.println("Error connecting to server");
-    }
-  }
-
-  /** Stops the connection to the server. */
-  private void stopConnection() {
-    try {
-      if (this.writer != null) {
-        writer.close();
-      }
-      if (this.reader != null) {
-        reader.close();
-      }
-      if (socket != null && !socket.isClosed()) {
-        socket.close();
-      }
-
-      System.out.println("Connection closed");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   /** Stops the client. */
   public void stop() {
     this.running = false;
+    this.stopped = true;
   }
 
   /**

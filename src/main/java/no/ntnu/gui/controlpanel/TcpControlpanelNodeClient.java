@@ -57,7 +57,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     startConnection();
     running = true;
     while (running) {
-      recieveCommand();
+      receiveCommand();
     }
   }
 
@@ -87,7 +87,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   }
 
   /** Receives a command from the server. */
-  private void recieveCommand() {
+  private void receiveCommand() {
     try {
       if (reader != null) {
         String command = reader.readLine();
@@ -101,6 +101,8 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
       if (running) {
         startConnection();
       }
+    } catch (NullPointerException e) {
+      System.out.println("Reader is null");
     }
   }
 
