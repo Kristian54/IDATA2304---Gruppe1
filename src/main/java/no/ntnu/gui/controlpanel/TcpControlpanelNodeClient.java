@@ -29,6 +29,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   PrintWriter writer;
   BufferedReader reader;
   boolean running;
+  boolean stopped = false;
 
   /**
    * Create a new TCP client for a control panel node.
@@ -63,7 +64,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    */
   private void startConnection() {
     boolean connected = false;
-    while (!connected) {
+    while (!connected && !stopped) {
       try {
         if (socket != null) {
           socket.close();
@@ -90,10 +91,13 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    */
   private void recieveCommand() {
     try {
-      String command = reader.readLine();
-      if (command != null) {
-        handleInput(command);
+      if (reader != null) {
+        String command = reader.readLine();
+        if (command != null) {
+          handleInput(command);
+        }
       }
+
     } catch (IOException e) {
       System.out.println("Error reading command: " + e.getMessage());
       if (running) {
@@ -367,8 +371,11 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    */
   public void stop() {
     this.running = false;
+    this.stopped = true;
     try {
+      if (socket != null) {
         socket.close();
+      }
     } catch (IOException e) {
         throw new RuntimeException(e);
     }
