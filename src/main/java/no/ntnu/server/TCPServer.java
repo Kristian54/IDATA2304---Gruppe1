@@ -1,14 +1,11 @@
 package no.ntnu.server;
 
-import no.ntnu.greenhouse.TcpSensorActuatorNodeClient;
-
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- * A TCP server for clients to connect to.
- */
+/** A TCP server for clients to connect to. */
 public class TCPServer {
   public static final int PORT_NUMBER = 10020;
   private ServerSocket serverSocket;
@@ -16,12 +13,8 @@ public class TCPServer {
   private static TCPServer instance;
   private ArrayList<ClientHandler> clientsHandlers = new ArrayList<>();
 
-  /**
-   * Creates an instance of a TCP server.
-   *
-   */
-  private TCPServer() {
-  }
+  /** Creates an instance of a TCP server. */
+  private TCPServer() {}
 
   /**
    * Controls that only one instance of the TCP server is created.
@@ -29,8 +22,9 @@ public class TCPServer {
    * @return the TCP server instance
    */
   public static TCPServer getInstance() {
-    if (instance == null)
+    if (instance == null) {
       instance = new TCPServer();
+    }
     return instance;
   }
 
@@ -45,32 +39,31 @@ public class TCPServer {
       running = true;
       System.out.println("Server started on port " + port + ".");
 
-      while(running) {
+      while (running) {
         acceptNewClient();
       }
 
     } catch (IOException e) {
       throw new RuntimeException("Cannot open port", e);
-    }
-    finally {
+    } finally {
       stopServer();
     }
   }
 
   private void acceptNewClient() {
-      Socket clientSocket = null;
-      try {
-          clientSocket = serverSocket.accept();
-          if (clientSocket != null) {
-              System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
-              ClientHandler clientHandler = new ClientHandler(clientSocket, this);
-              Thread clientProcessor = new Thread(clientHandler::run);
-              clientProcessor.start();
-              clientsHandlers.add(clientHandler);
-          }
-      } catch (IOException e) {
-          throw new RuntimeException(e);
+    Socket clientSocket = null;
+    try {
+      clientSocket = serverSocket.accept();
+      if (clientSocket != null) {
+        System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
+        ClientHandler clientHandler = new ClientHandler(clientSocket, this);
+        Thread clientProcessor = new Thread(clientHandler::run);
+        clientProcessor.start();
+        clientsHandlers.add(clientHandler);
       }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -107,16 +100,14 @@ public class TCPServer {
    */
   public void sendMessageToSensorActuatorNode(String message, int id) {
     for (ClientHandler clientHandler : clientsHandlers) {
-      if (clientHandler.getNodeType().equals(NodeType.SENSORACTUATOR) && clientHandler.getHandlerId() == id) {
+      if (clientHandler.getNodeType().equals(NodeType.SENSORACTUATOR)
+          && clientHandler.getHandlerId() == id) {
         clientHandler.sendToClient(message);
       }
     }
   }
 
-
-  /**
-   * Stops the server.
-   */
+  /** Stops the server. */
   public void stopServer() {
     running = false;
     try {

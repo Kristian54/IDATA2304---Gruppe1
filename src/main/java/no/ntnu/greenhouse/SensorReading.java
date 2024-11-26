@@ -61,6 +61,7 @@ public class SensorReading {
 
   /**
    * Get a string representation of the sensor reading.
+   *
    * @return A string representation of the sensor reading
    */
   @Override

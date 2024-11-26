@@ -1,6 +1,10 @@
 package no.ntnu.greenhouse;
-import java.io.*;
-import java.net.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +12,9 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
 
-/**
- * A TCP client for a node to connect a sensor/actuator.
- */
-public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorListener,
-    NodeStateListener {
+/** A TCP client for a node to connect a sensor/actuator. */
+public class TcpSensorActuatorNodeClient
+    implements SensorListener, ActuatorListener, NodeStateListener {
 
   private boolean running;
   private Socket socket;
@@ -30,9 +32,15 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
    * @param node The sensor/actuator node to connect
    */
   public TcpSensorActuatorNodeClient(String ipAddress, int port, SensorActuatorNode node) {
-    if (node == null) throw new RuntimeException("Node cannot be null");
-    if (ipAddress == null) throw new RuntimeException("IP Address cannot be null");
-    if (port < 0 || port > 65535) throw new RuntimeException("Port number must be within 5 digits and not negative");
+    if (node == null) {
+      throw new RuntimeException("Node cannot be null");
+    }
+    if (ipAddress == null) {
+      throw new RuntimeException("IP Address cannot be null");
+    }
+    if (port < 0 || port > 65535) {
+      throw new RuntimeException("Port number must be within 5 digits and not negative");
+    }
     this.node = node;
     this.ip = ipAddress;
     this.port = port;
@@ -41,9 +49,7 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     node.addStateListener(this);
   }
 
-  /**
-   * Starts the TCP client and connects to the server.
-   */
+  /** Starts the TCP client and connects to the server. */
   public void run() {
     startConnection();
     sendId();
@@ -55,9 +61,7 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     }
   }
 
-  /**
-   * Receives a command from the server.
-   */
+  /** Receives a command from the server. */
   private void recieveCommand() {
     try {
       String command = reader.readLine();
@@ -102,23 +106,17 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     node.setActuator(actuatorId, isOn);
   }
 
-  /**
-   * Sends the ID of the node to the server.
-   */
+  /** Sends the ID of the node to the server. */
   private void sendId() {
     sendCommand("setId-" + node.getId());
   }
 
-  /**
-   * Sends the type of the node to the server.
-   */
+  /** Sends the type of the node to the server. */
   private void sendNodeType() {
     sendCommand("setNodeType-" + "SensorActuator");
   }
 
-  /**
-   * Sends the actuator data of the node to the server.
-   */
+  /** Sends the actuator data of the node to the server. */
   private void sendNodeActuatorData() {
     StringBuilder sb = new StringBuilder();
     sb.append("nodeAdded-");
@@ -126,26 +124,25 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sb.append(";");
     Map<Integer, String> actuatorCounts = mapActuators(node.getActuators());
 
-    actuatorCounts.forEach((type, count) -> {
-      sb.append(count);
-      sb.append("_");
-      sb.append(type);
-      sb.append(" ");
-    });
+    actuatorCounts.forEach(
+        (type, count) -> {
+          sb.append(count);
+          sb.append("_");
+          sb.append(type);
+          sb.append(" ");
+        });
 
     sendCommand(sb.toString());
   }
 
-  /**
-   * Sends the updated sensor data to the server.
-   */
+  /** Sends the updated sensor data to the server. */
   private void sendUpdatedSensorData() {
     StringBuilder builder = new StringBuilder();
     builder.append("updateSensorData-");
     builder.append(node.getId());
     builder.append(";");
     List<Sensor> sensors = node.getSensors();
-    for (Sensor sensor: sensors) {
+    for (Sensor sensor : sensors) {
       SensorReading reading = sensor.getReading();
       builder.append(reading.getType());
       builder.append("=");
@@ -189,13 +186,15 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     }
   }
 
-  /**
-   * Stops the connection to the server.
-   */
-  private void stopConnection () {
+  /** Stops the connection to the server. */
+  private void stopConnection() {
     try {
-      if (this.writer != null) writer.close();
-      if (this.reader != null) reader.close();
+      if (this.writer != null) {
+        writer.close();
+      }
+      if (this.reader != null) {
+        reader.close();
+      }
       if (socket != null && !socket.isClosed()) {
         socket.close();
       }
@@ -206,13 +205,10 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     }
   }
 
-  /**
-   * Stops the client.
-   */
+  /** Stops the client. */
   public void stop() {
     this.running = false;
   }
-
 
   /**
    * Send a command to the server.
@@ -233,18 +229,13 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     return sent;
   }
 
-  /**
-   * Sends the updated sensor data to the server.
-   */
+  /** Sends the updated sensor data to the server. */
   @Override
   public void sensorsUpdated(List<Sensor> sensors) {
     sendUpdatedSensorData();
   }
 
-
-  /**
-   * Sends the updated actuator data to the server.
-   */
+  /** Sends the updated actuator data to the server. */
   @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
     sendActuatorUpdate(actuator);
