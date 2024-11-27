@@ -7,8 +7,6 @@ distributed application.
 
 ## Introduction
 
-(Remove) A short introduction of the contents of this document.
-
 This document describes the communication protocol used in our solution for a functioning greenhouse 
 containing sensors, actuators and control panels. The greenhouse is controlled and monitored by one or more control panels. 
 The sensors and actuators are connected to a node that is responsible for handling sensor data and actuator state updates.
@@ -26,9 +24,6 @@ The sensors and actuators are connected to a node that is responsible for handli
 
 ## The underlying transport protocol
 
-TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you 
-choose this transport layer protocol?
-
 In this project we use Transmission Control Protocol (TCP) as the underlying transport protocol. We 
 have chosen to use TCP in order to have reliable communication between the different elements of our 
 solution. TCP ensures that data packets is received by the receiving unit. This is done by 
@@ -45,19 +40,18 @@ number has to be a 16-bit integer, it can be any number between 0 and 65 535 [[1
 
 ## The architecture
 
-(Remove) show the general architecture of your network. Which part is a server? Who are clients? 
-Do you have one or several servers? Perhaps include a picture here.
-
 Our solution consists of a server and multiple sensor/actuator nodes and control panel nodes. The server is responsible
 for allowing the nodes to communicate and acts like a central hub for the communication. The nodes are individually
 connected to the server via TCP, where they will send and receive messages. The server will direct messages to the
 correct nodes based on the information given.
 
-## The flow of information and events
+`Sensor/Actuator Node` <--> `Server` <--> `Control Panel Node`
 
-(Remove) describe what each network node does and when. Some periodic events? Some reaction on 
-incoming packets? Perhaps split into several subsections, where each subsection describes one 
-node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).
+* `Server` - One server that acts as a middleman for all communication.
+* `Sensor/Actuator Node` - One or multiple nodes that are responsible for handling sensor data and actuator state updates.
+* `Control Panel Node` - One or multiple nodes that are responsible for visualizing the status of sensor and actuator nodes and sending control commands to them.
+
+## The flow of information and events
 
 The general flow of information in our application is for the nodes to feed (push) information to the server, where it
 will be interpreted and directed to the correct nodes. However, in some cases the nodes will request information on
@@ -84,18 +78,12 @@ also allow for broadcasting messages to all control panel nodes, or all sensor/a
 
 ## Connection and state
 
-(Remove) is your communication protocol connection-oriented or connection-less? Is it stateful or 
-stateless? 
-
 Since we are using TCP, the communication in this project is connection-oriented. This is described 
 in more detail in the chapter about [the underlying transport protocol](#The-underlying-transport-protocol).
 This is also a stateful protocol, since it keeps track of the data that is transmitted and if it is 
 transmitted or not, so it is able to retransmit data if an error occurs [[2](#Sources)].
 
 ## Types, constants
-
-(Remove) Do you have some specific value types you use in several messages? Then you can describe 
-them here.
 
 #### Node Types
 Node types are represented by ENUMs in the code. These are used by the server to differentiate between the node types
@@ -104,6 +92,7 @@ for broadcasting and directing messages. The different node types are:
 - SENSORACTUATOR
 - UNDEFINED
   - Default value if not set.
+
 #### Command Types
 - setNodeType
   - Used to set the node type on connection. Node type will be used by the server to broadcast messages.
@@ -147,9 +136,6 @@ for broadcasting and directing messages. The different node types are:
 
 ## Message format
 
-(Remove) describe the general format of all messages. Then describe specific format for each 
-message type in your protocol.
-
 The messages are sent as Strings where each line represents a single command. Our messages are on the general format:
 "command-nodeID;arguments". Command represents how the server and possibly nodes will execute the following information.
 The nodeID represents the ID of the node that the command was sent from, or will be directed to. The arguments are
@@ -166,17 +152,11 @@ different for each command, but follow similar rules. Some example commands are:
 
 ### Error messages
 
-(Remove) describe the possible error messages that nodes can send in your system.
-
 Error messages are sent by the server as a response to a command it could not interpret. The error message will be sent
 to the node that sent the command. The error message is as follows:
 - unknownCommandError
 
 ## An example scenario
-
-(Remove) describe a typical scenario. How would it look like from communication perspective? When 
-are connections established? Which packets are sent? How do nodes react on the packets? An 
-example scenario could be as follows:
 
 1. The server is started and is ready to accept incoming clients.
 2. The greenhouse simulation is started, and 2 sensor/actuator nodes are started and connect to the server individually.
@@ -197,8 +177,6 @@ example scenario could be as follows:
 
 ## Reliability and security
 
-(Remove) describe the reliability and security mechanisms your solution supports.
-
 #### Reliability
 For reliability, we have implemented outage protection for the network nodes. If the server becomes unreachable,
 unavailable or offline the network nodes will attempt to reconnect to the server until successful. After reconnecting,
@@ -207,6 +185,8 @@ network outage happens.
 
 #### Encryption
 TODO
+
+[//]: # (TODO: Finish.)
 
 ## Sources
 
