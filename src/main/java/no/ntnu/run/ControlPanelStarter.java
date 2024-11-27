@@ -27,11 +27,6 @@ public class ControlPanelStarter {
    *     Apply the changes.
    */
   public static void main(String[] args) {
-    boolean fake = false; // make it true to test in fake mode
-    if (args.length == 1 && "fake".equals(args[0])) {
-      Logger.info("Using FAKE events");
-    }
-
     ControlPanelStarter starter = new ControlPanelStarter();
     starter.start();
   }
