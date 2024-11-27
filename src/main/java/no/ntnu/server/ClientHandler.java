@@ -1,16 +1,20 @@
 package no.ntnu.server;
 
+import static no.ntnu.cryptography.CryptoHandler.decrypt;
+import static no.ntnu.cryptography.CryptoHandler.encrypt;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import no.ntnu.cryptography.CryptoDetails;
 
 /**
  * The class that handles the communication between the server and a client.
  */
-public class ClientHandler implements Runnable {
+public class ClientHandler extends CryptoDetails implements Runnable {
     private final Socket clientSocket;
     private final TCPServer server;
     private NodeType nodeType = NodeType.UNDEFINED;
@@ -73,6 +77,13 @@ public class ClientHandler implements Runnable {
      * @param inputLine The input from the client
      */
     private void handleInput(String inputLine) {
+        // TODO: Fix decryption?
+        try {
+            inputLine = decrypt(ALGORITHM, inputLine, KEY, IV);
+        } catch (Exception e) {
+            System.err.println("Error decrypting input in ClientHandler: " + e.getMessage());
+        }
+
         System.out.println("Received: " + inputLine);
         List<String> inputParts = List.of(inputLine.split("-"));
         switch (inputParts.get(0)) {
@@ -160,6 +171,12 @@ public class ClientHandler implements Runnable {
      */
     public void sendToClient(String message) {
         if (socketWriter != null) {
+            // TODO: Fix encryption?
+            try {
+                message = encrypt(ALGORITHM, message, KEY, IV);
+            } catch (Exception e) {
+                System.err.println("Error encrypting message: " + e.getMessage());
+            }
             socketWriter.println(message);
             System.out.println("Sent: " + message);
         }

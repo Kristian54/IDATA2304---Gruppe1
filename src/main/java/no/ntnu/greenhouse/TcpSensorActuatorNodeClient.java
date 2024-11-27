@@ -1,16 +1,21 @@
 package no.ntnu.greenhouse;
+import static no.ntnu.cryptography.CryptoHandler.decrypt;
+import static no.ntnu.cryptography.CryptoHandler.encrypt;
+
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import no.ntnu.cryptography.CryptoDetails;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
 
 /**
  * A TCP client for a node to connect a sensor/actuator.
  */
-public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorListener {
+public class TcpSensorActuatorNodeClient extends CryptoDetails
+    implements SensorListener, ActuatorListener {
 
   private boolean running;
   private Socket socket;
@@ -72,6 +77,13 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
    * @param command The command to handle
    */
   private void handleInput(String command) {
+    // TODO: Fix decryption?
+    try {
+      command = decrypt(ALGORITHM, command, KEY, IV);
+    } catch (Exception e) {
+      System.err.println("Error decrypting input: " + e.getMessage());
+    }
+
     System.out.println("Received: " + command);
     String[] parts = command.split("-");
     switch (parts[0]) {
@@ -220,11 +232,13 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
   private boolean sendCommand(String command) {
     boolean sent = false;
     if (writer != null && reader != null) {
+      // TODO: Fix encryption?
       try {
+        command = encrypt(ALGORITHM, command, KEY, IV);
         writer.println(command);
         sent = true;
       } catch (Exception e) {
-        System.out.println("Error sending command: " + e.getMessage());
+        System.err.println("Error sending command: " + e.getMessage());
       }
     }
     return sent;

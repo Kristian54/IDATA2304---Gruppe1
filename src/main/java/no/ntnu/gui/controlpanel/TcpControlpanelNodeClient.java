@@ -1,5 +1,7 @@
 package no.ntnu.gui.controlpanel;
 
+import static no.ntnu.cryptography.CryptoHandler.decrypt;
+import static no.ntnu.cryptography.CryptoHandler.encrypt;
 import static no.ntnu.tools.Parser.parseDoubleOrError;
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
@@ -14,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
+import no.ntnu.cryptography.CryptoDetails;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
@@ -21,7 +24,7 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 /**
  * A TCP client for a control panel node.
  */
-public class TcpControlpanelNodeClient implements GreenhouseEventListener {
+public class TcpControlpanelNodeClient extends CryptoDetails implements GreenhouseEventListener {
   ControlPanelLogic logic;
   String ip;
   int port;
@@ -99,6 +102,13 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    * @param inputLine The input to handle
    */
   private void handleInput(String inputLine) {
+    // TODO: Fix decryption?
+    try {
+     inputLine = decrypt(ALGORITHM, inputLine, KEY, IV);
+   } catch (Exception e) {
+     System.err.println("Error decrypting input: " + e.getMessage());
+    }
+
     System.out.println("Received: " + inputLine);
     List<String> inputParts = List.of(inputLine.split("-"));
     switch (inputParts.get(0)) {
@@ -291,11 +301,13 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   private boolean sendCommand(String command) {
     boolean sent = false;
     if (writer != null && reader != null) {
+      // TODO: Fix encryption?
       try {
+        command = encrypt(ALGORITHM, command, KEY, IV);
         writer.println(command);
         sent = true;
       } catch (Exception e) {
-        System.out.println("Error sending command: " + e.getMessage());
+        System.err.println("Error sending command: " + e.getMessage());
       }
     }
     return sent;

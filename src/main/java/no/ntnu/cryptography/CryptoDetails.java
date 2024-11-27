@@ -10,6 +10,7 @@ import javax.crypto.spec.IvParameterSpec;
 public class CryptoDetails{
   protected static final SecretKey KEY;
   protected static final IvParameterSpec IV;
+  protected static final String ALGORITHM = "AES/CBC/PKCS5Padding";
 
   static {
     try {

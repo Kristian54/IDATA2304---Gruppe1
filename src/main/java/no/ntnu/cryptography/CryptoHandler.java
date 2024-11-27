@@ -1,5 +1,6 @@
 package no.ntnu.cryptography;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -67,7 +68,7 @@ public class CryptoHandler {
 
     Cipher cipher = Cipher.getInstance(algorithm);
     cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-    byte[] cipherText = cipher.doFinal(input.getBytes());
+    byte[] cipherText = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
     return Base64.getEncoder()
         .encodeToString(cipherText);
   }
