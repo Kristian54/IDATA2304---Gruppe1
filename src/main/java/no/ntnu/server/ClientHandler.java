@@ -103,6 +103,7 @@ public class ClientHandler extends Thread {
         break;
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
+        sendToClient("unknownCommandError");
     }
   }
 
