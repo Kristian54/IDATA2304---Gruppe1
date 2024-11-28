@@ -321,6 +321,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
   public ActuatorCollection getActuators() {
     return actuators;
   }
+  
 
   @Override
   public void onCommunicationChannelClosed() {
