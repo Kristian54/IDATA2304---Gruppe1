@@ -1,7 +1,5 @@
 # Communication protocol
 
-[//]: # (TODO: Finish this document.)
-
 This document describes the protocol used for communication between the different nodes of the
 distributed application.
 
@@ -181,12 +179,7 @@ to the node that sent the command. The error message is as follows:
 For reliability, we have implemented outage protection for the network nodes. If the server becomes unreachable,
 unavailable or offline the network nodes will attempt to reconnect to the server until successful. After reconnecting,
 the nodes will resume normal operation. This ensures that the application will continue to function if a power or
-network outage happens. 
-
-#### Encryption
-TODO
-
-[//]: # (TODO: Finish.)
+network outage happens.
 
 ## Sources
 

@@ -150,13 +150,11 @@ public class ClientHandler extends Thread {
     try {
       int id1 = Integer.parseInt(id);
       if (id1 < 0) {
-        // TODO: Send error response to client
       } else {
         this.id = id1;
         System.out.println("Node ID set to: " + this.id);
       }
     } catch (NumberFormatException e) {
-      // TODO: Send error response to client
     }
   }
 
