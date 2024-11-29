@@ -3,6 +3,7 @@ package no.ntnu.greenhouse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,10 +106,10 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
   /**
    * Returns camera image as base64
    */
-  public String convertImageToBase64() {
-    String imagePath = "images/camera1.jpg";
+  public String getCameraImageAsBase64() {
+    String filePath = "images/camera1.jpg";
     try {
-      byte[] imageBytes = Files.readAllBytes(new File(imagePath).toPath());
+      byte[] imageBytes = Files.readAllBytes(new File(filePath).toPath());
       return Base64.getEncoder().encodeToString(imageBytes);
     } catch (IOException e) {
       throw new RuntimeException("Error reading image file", e);

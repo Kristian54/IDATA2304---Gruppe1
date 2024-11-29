@@ -61,7 +61,6 @@ public class TcpSensorActuatorNodeClient
    */
   public void run() {
     startConnection();
-
     sendImageToServer();
     running = true;
     while (running) {
@@ -130,6 +129,7 @@ public class TcpSensorActuatorNodeClient
         break;
       case "controlPanelAdded":
         sendNodeActuatorData();
+        sendImageToServer();
         break;
       default:
         throw new RuntimeException("Unknown command: " + command);
@@ -286,7 +286,7 @@ public class TcpSensorActuatorNodeClient
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-    String base64 = node.convertImageToBase64();
+    String base64 = node.getCameraImageAsBase64();
 
     StringBuilder builder = new StringBuilder();
     builder.append("sendCameraImage-");

@@ -20,7 +20,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
   private static final double VERTICAL_OFFSET = 50;
   private static final double HORIZONTAL_OFFSET = 150;
   private static final double WINDOW_WIDTH = 300;
-  private static final double WINDOW_HEIGHT = 300;
+  private static final double WINDOW_HEIGHT = 400;
   private final SensorActuatorNode node;
 
   private ActuatorPane actuatorPane;
