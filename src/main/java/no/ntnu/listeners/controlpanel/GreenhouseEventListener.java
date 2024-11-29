@@ -48,4 +48,6 @@ public interface GreenhouseEventListener {
    * This event is fired when a camera takes a picture.
    */
   void onPictureTaken(int nodeId, String data);
+
+
 }

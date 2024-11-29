@@ -13,17 +13,12 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 
 public class CameraPane extends TitledPane {
   private final int nodeId;
-  private HBox content;
 
   public CameraPane(int nodeId) {
     super();
     this.nodeId = nodeId;
     setText("Camera");
-    content = new HBox();
-    Button cameraButton = new Button("Take picture");
-    content.getChildren().add(cameraButton);
-    //cameraButton.setOnAction(event -> takePicture());
-    setContent(content);
+    setContent(new HBox());
   }
 
   public int getNodeId() {
