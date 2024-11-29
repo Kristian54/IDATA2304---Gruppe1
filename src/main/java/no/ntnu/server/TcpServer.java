@@ -1,36 +1,51 @@
 package no.ntnu.server;
 
+<<<<<<< HEAD:src/main/java/no/ntnu/server/TCPServer.java
 import java.nio.file.Files;
 import no.ntnu.greenhouse.TcpSensorActuatorNodeClient;
 
 import java.io.*;
 import java.net.*;
+=======
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+>>>>>>> dev:src/main/java/no/ntnu/server/TcpServer.java
 import java.util.ArrayList;
 
-/**
- * A TCP server for clients to connect to.
- */
-public class TCPServer {
+/** A TCP server for clients to connect to. */
+public class TcpServer {
   public static final int PORT_NUMBER = 10020;
   private ServerSocket serverSocket;
   private boolean running = false;
-  private static TCPServer instance;
+  private static TcpServer instance;
   private ArrayList<ClientHandler> clientsHandlers = new ArrayList<>();
 
+<<<<<<< HEAD:src/main/java/no/ntnu/server/TCPServer.java
   /**
    * Creates an instance of a TCP server.
    */
   private TCPServer() {
   }
+=======
+  /** Creates an instance of a TCP server. */
+  private TcpServer() {}
+>>>>>>> dev:src/main/java/no/ntnu/server/TcpServer.java
 
   /**
    * Controls that only one instance of the TCP server is created.
    *
    * @return the TCP server instance
    */
+<<<<<<< HEAD:src/main/java/no/ntnu/server/TCPServer.java
   public static TCPServer getInstance() {
     if (instance == null) {
       instance = new TCPServer();
+=======
+  public static TcpServer getInstance() {
+    if (instance == null) {
+      instance = new TcpServer();
+>>>>>>> dev:src/main/java/no/ntnu/server/TcpServer.java
     }
     return instance;
   }
@@ -107,17 +122,19 @@ public class TCPServer {
    */
   public void sendMessageToSensorActuatorNode(String message, int id) {
     for (ClientHandler clientHandler : clientsHandlers) {
+<<<<<<< HEAD:src/main/java/no/ntnu/server/TCPServer.java
       if (clientHandler.getNodeType().equals(NodeType.SENSORACTUATOR) &&
           clientHandler.getHandlerId() == id) {
+=======
+      if (clientHandler.getNodeType().equals(NodeType.SENSORACTUATOR)
+          && clientHandler.getHandlerId() == id) {
+>>>>>>> dev:src/main/java/no/ntnu/server/TcpServer.java
         clientHandler.sendToClient(message);
       }
     }
   }
 
-
-  /**
-   * Stops the server.
-   */
+  /** Stops the server. */
   public void stopServer() {
     running = false;
     try {

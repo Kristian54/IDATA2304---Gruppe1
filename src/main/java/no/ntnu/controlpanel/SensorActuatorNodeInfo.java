@@ -4,19 +4,15 @@ import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
 
 /**
- * Contains information about one sensor/actuator node. This is NOT the node itself, rather
- * an information that can be used on the control-panel side to represent the node.
+ * Contains information about one sensor/actuator node. This is NOT the node itself, rather an
+ * information that can be used on the control-panel side to represent the node.
  */
 public class SensorActuatorNodeInfo {
 
-  /**
-   * The unique ID of the node.
-   */
+  /** The unique ID of the node. */
   private final int nodeId;
 
-  /**
-   * The actuators of the node.
-   */
+  /** The actuators of the node. */
   private final ActuatorCollection actuators = new ActuatorCollection();
 
   /**
@@ -28,6 +24,11 @@ public class SensorActuatorNodeInfo {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Add an actuator to the sensor/actuator node.
+   *
+   * @param actuator The actuator to add
+   */
   public void addActuator(Actuator actuator) {
     actuators.add(actuator);
   }

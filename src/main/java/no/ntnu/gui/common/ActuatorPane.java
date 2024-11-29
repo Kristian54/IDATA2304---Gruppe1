@@ -5,12 +5,10 @@ import java.util.Map;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -33,17 +31,10 @@ public class ActuatorPane extends TitledPane {
   public ActuatorPane(ActuatorCollection actuators) {
     super();
     setText("Actuators");
-
     VBox vbox = new VBox();
     vbox.setSpacing(10);
-    vbox.setPadding(new Insets(10));
-
-    ScrollPane scrollPane = new ScrollPane(vbox);
-    scrollPane.setFitToWidth(true); // Ensure the scroll pane resizes to fit the width
-    setContent(scrollPane);
-
+    setContent(vbox);
     addActuatorControls(actuators, vbox);
-
     GuiTools.stretchVertically(this);
   }
 

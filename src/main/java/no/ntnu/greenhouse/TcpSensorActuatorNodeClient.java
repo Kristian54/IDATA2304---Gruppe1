@@ -1,23 +1,21 @@
 package no.ntnu.greenhouse;
 
-import java.awt.Image;
-import java.io.*;
-import java.net.*;
-import java.nio.file.Files;
-import java.util.Base64;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
-import no.ntnu.tools.ImageLoader;
 
-/**
- * A TCP client for a node to connect a sensor/actuator.
- */
-public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorListener,
-    NodeStateListener {
+/** A TCP client for a node to connect a sensor/actuator. */
+public class TcpSensorActuatorNodeClient
+    implements SensorListener, ActuatorListener, NodeStateListener {
 
   private boolean running;
   private Socket socket;
@@ -26,13 +24,14 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
   private String ip;
   private int port;
   private final SensorActuatorNode node;
+  private boolean stopped = false;
 
   /**
    * Creates a new TCP client for a node to connect to a server.
    *
    * @param ipAddress The IP address of the server
-   * @param port      The port number of the server
-   * @param node      The sensor/actuator node to connect
+   * @param port The port number of the server
+   * @param node The sensor/actuator node to connect
    */
   public TcpSensorActuatorNodeClient(String ipAddress, int port, SensorActuatorNode node) {
     if (node == null) {
@@ -52,33 +51,57 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     node.addStateListener(this);
   }
 
-
-  /**
-   * Starts the TCP client and connects to the server.
-   */
+  /** Starts the TCP client and connects to the server. */
   public void run() {
     startConnection();
-    sendId();
-    sendNodeType();
-    sendNodeActuatorData();
-    sendImageToServer("images/camera1.jpg");
+    running = true;
     while (running) {
-      recieveCommand();
+      receiveCommand();
     }
-
   }
 
   /**
-   * Receives a command from the server.
+   * Starts the connection to the server or reconnects.
    */
-  private void recieveCommand() {
+  private void startConnection() {
+    boolean connected = false;
+    while (!connected && !stopped) {
+      try {
+        if (socket != null) {
+          socket.close();
+          System.out.println("Attempting reconnect");
+        }
+        Thread.sleep(2000);
+        this.socket = new Socket(this.ip, this.port);
+        this.writer = new PrintWriter(this.socket.getOutputStream(), true);
+        this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        connected = true;
+        System.out.println(node.getId() + "connected to server");
+        sendId();
+        sendNodeType();
+        sendNodeActuatorData();
+      } catch (IOException e) {
+        System.out.println("Error connecting to server");
+      } catch (InterruptedException e) {
+        System.out.println("Error sleeping thread");
+      }
+    }
+  }
+
+  /** Receives a command from the server. */
+  private void receiveCommand() {
     try {
       String command = reader.readLine();
       if (command != null) {
         handleInput(command);
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.out.println("Error reading command: " + e.getMessage());
+      if (running) {
+        startConnection();
+      }
+    } catch (NullPointerException e) {
+      System.out.println("Reader is null");
     }
   }
 
@@ -115,23 +138,17 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     node.setActuator(actuatorId, isOn);
   }
 
-  /**
-   * Sends the ID of the node to the server.
-   */
+  /** Sends the ID of the node to the server. */
   private void sendId() {
     sendCommand("setId-" + node.getId());
   }
 
-  /**
-   * Sends the type of the node to the server.
-   */
+  /** Sends the type of the node to the server. */
   private void sendNodeType() {
     sendCommand("setNodeType-" + "SensorActuator");
   }
 
-  /**
-   * Sends the actuator data of the node to the server.
-   */
+  /** Sends the actuator data of the node to the server. */
   private void sendNodeActuatorData() {
     StringBuilder sb = new StringBuilder();
     sb.append("nodeAdded-");
@@ -139,23 +156,18 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sb.append(";");
     Map<Integer, String> actuatorCounts = mapActuators(node.getActuators());
 
-    actuatorCounts.forEach((type, count) -> {
-      sb.append(count);
-      sb.append("_");
-      sb.append(type);
-      sb.append(" ");
-    });
+    actuatorCounts.forEach(
+        (type, count) -> {
+          sb.append(count);
+          sb.append("_");
+          sb.append(type);
+          sb.append(" ");
+        });
 
     sendCommand(sb.toString());
   }
 
-  private void sendCameraImage() {
-    sendCommand("sendCameraImage-" + node.getId());
-  }
-
-  /**
-   * Sends the updated sensor data to the server.
-   */
+  /** Sends the updated sensor data to the server. */
   private void sendUpdatedSensorData() {
     StringBuilder builder = new StringBuilder();
     builder.append("updateSensorData-");
@@ -190,52 +202,11 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     return actuatorCounts;
   }
 
-  /**
-   * Starts the conections to the server.
-   *
-   * @throws IOException Upon failure to connect to the server
-   */
-  private void startConnection() {
-    try {
-      this.socket = new Socket(this.ip, this.port);
-      this.writer = new PrintWriter(this.socket.getOutputStream(), true);
-      this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-      this.running = true;
-    } catch (IOException e) {
-      System.out.println("Error connecting to server");
-    }
-    //sendImageToControlPanel("images/camera1.jpg", 1);
-    sendCameraImage();
-  }
-
-  /**
-   * Stops the connection to the server.
-   */
-  private void stopConnection() {
-    try {
-      if (this.writer != null) {
-        writer.close();
-      }
-      if (this.reader != null) {
-        reader.close();
-      }
-      if (socket != null && !socket.isClosed()) {
-        socket.close();
-      }
-
-      System.out.println("Connection closed");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Stops the client.
-   */
+  /** Stops the client. */
   public void stop() {
     this.running = false;
+    this.stopped = true;
   }
-
 
   /**
    * Send a command to the server.
@@ -256,39 +227,13 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     return sent;
   }
 
-
-  public void sendImageToServer(String path) {
-    String base64 = convertImageToBase64(path);
-
-    StringBuilder builder = new StringBuilder();
-    builder.append("sendCameraImage-");
-    builder.append(node.getId());
-    builder.append(";");
-    builder.append(base64);
-    sendCommand(builder.toString());
-  }
-
-  public String convertImageToBase64(String imagePath) {
-    try {
-      byte[] imageBytes = Files.readAllBytes(new File(imagePath).toPath());
-      return Base64.getEncoder().encodeToString(imageBytes);
-    } catch (IOException e) {
-      throw new RuntimeException("Error reading image file", e);
-    }
-  }
-
-  /**
-   * Sends the updated sensor data to the server.
-   */
+  /** Sends the updated sensor data to the server. */
   @Override
   public void sensorsUpdated(List<Sensor> sensors) {
     sendUpdatedSensorData();
   }
 
-
-  /**
-   * Sends the updated actuator data to the server.
-   */
+  /** Sends the updated actuator data to the server. */
   @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
     sendActuatorUpdate(actuator);
@@ -323,5 +268,4 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
   private void sendNodeRemoved() {
     sendCommand("nodeRemoved-" + node.getId());
   }
-
 }

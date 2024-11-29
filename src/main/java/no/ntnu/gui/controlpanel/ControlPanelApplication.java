@@ -38,8 +38,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
 
-  private final Map<Integer, CameraPane> cameraPanes = new HashMap<>();
-
   private final Map<Integer, SensorActuatorNodeInfo> nodeInfos = new HashMap<>();
   private final Map<Integer, Tab> nodeTabs = new HashMap<>();
 
