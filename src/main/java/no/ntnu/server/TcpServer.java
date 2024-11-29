@@ -6,24 +6,24 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /** A TCP server for clients to connect to. */
-public class TCPServer {
+public class TcpServer {
   public static final int PORT_NUMBER = 10020;
   private ServerSocket serverSocket;
   private boolean running = false;
-  private static TCPServer instance;
+  private static TcpServer instance;
   private ArrayList<ClientHandler> clientsHandlers = new ArrayList<>();
 
   /** Creates an instance of a TCP server. */
-  private TCPServer() {}
+  private TcpServer() {}
 
   /**
    * Controls that only one instance of the TCP server is created.
    *
    * @return the TCP server instance
    */
-  public static TCPServer getInstance() {
+  public static TcpServer getInstance() {
     if (instance == null) {
-      instance = new TCPServer();
+      instance = new TcpServer();
     }
     return instance;
   }

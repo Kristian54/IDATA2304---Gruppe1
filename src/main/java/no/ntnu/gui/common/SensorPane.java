@@ -29,14 +29,6 @@ public class SensorPane extends TitledPane {
     initialize(sensors);
   }
 
-  private void initialize(Iterable<SensorReading> sensors) {
-    setText("Sensors");
-    sensors.forEach(sensor ->
-        contentBox.getChildren().add(createAndRememberSensorLabel(sensor))
-    );
-    setContent(contentBox);
-  }
-
   /**
    * Create an empty sensor pane, without any data.
    */
@@ -52,6 +44,14 @@ public class SensorPane extends TitledPane {
    */
   public SensorPane(List<Sensor> sensors) {
     initialize(sensors.stream().map(Sensor::getReading).toList());
+  }
+
+  private void initialize(Iterable<SensorReading> sensors) {
+    setText("Sensors");
+    sensors.forEach(sensor ->
+        contentBox.getChildren().add(createAndRememberSensorLabel(sensor))
+    );
+    setContent(contentBox);
   }
 
   /**

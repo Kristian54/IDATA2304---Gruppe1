@@ -1,6 +1,6 @@
 package no.ntnu.run;
 
-import no.ntnu.server.TCPServer;
+import no.ntnu.server.TcpServer;
 
 /** Starter class for the greenhouse server. */
 public class GreenhouseServerStarter {
@@ -10,7 +10,7 @@ public class GreenhouseServerStarter {
    * @param args Command line arguments, not used.
    */
   public static void main(String[] args) {
-    TCPServer server = TCPServer.getInstance();
-    server.startServer(TCPServer.PORT_NUMBER);
+    TcpServer server = TcpServer.getInstance();
+    server.startServer(TcpServer.PORT_NUMBER);
   }
 }

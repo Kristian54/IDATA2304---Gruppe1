@@ -10,7 +10,7 @@ import java.util.List;
 /** The class that handles the communication between the server and a client. */
 public class ClientHandler extends Thread {
   private final Socket clientSocket;
-  private final TCPServer server;
+  private final TcpServer server;
   private NodeType nodeType = NodeType.UNDEFINED;
   private int id;
   private boolean running = false;
@@ -27,7 +27,7 @@ public class ClientHandler extends Thread {
    *     is closed, the socket is not connected, or the socket input has been shutdown using
    *     shutdownInput(), or the socket output has been shutdown using shutdownOutput().
    */
-  public ClientHandler(Socket clientSocket, TCPServer server) throws IOException {
+  public ClientHandler(Socket clientSocket, TcpServer server) throws IOException {
     if (clientSocket == null || server == null) {
       throw new IllegalArgumentException("Socket, server or node type cannot be null");
     }
@@ -155,6 +155,7 @@ public class ClientHandler extends Thread {
         System.out.println("Node ID set to: " + this.id);
       }
     } catch (NumberFormatException e) {
+      System.err.println("Invalid ID: " + id);
     }
   }
 
