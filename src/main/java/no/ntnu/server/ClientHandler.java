@@ -3,6 +3,7 @@ package no.ntnu.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
@@ -19,6 +20,7 @@ public class ClientHandler extends Thread {
 
   private final BufferedReader socketReader;
   private final PrintWriter socketWriter;
+  private final OutputStream outputStream;
 
   /**
    * Create a new client handler.
@@ -38,6 +40,7 @@ public class ClientHandler extends Thread {
     this.server = server;
     socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+    outputStream = clientSocket.getOutputStream();
   }
 
   /**
@@ -107,7 +110,8 @@ public class ClientHandler extends Thread {
         break;
       case "checkConnection":
         break;
-      case "getCameraImage":
+      case "sendCameraImage":
+        server.sendMessageToControlPanels(inputLine);
         break;
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
@@ -179,11 +183,16 @@ public class ClientHandler extends Thread {
     }
   }
 
-
-  public void sendCameraImage() {
-    //String cameraImageBase64 = node.getCameraImageBase64();
-    //sendToClient("cameraImage-" + cameraImageBase64);
+  public void sendImageToClient(byte[] imageBytes) {
+    try {
+      OutputStream outputStream = clientSocket.getOutputStream();
+      outputStream.write(imageBytes);
+      outputStream.flush();
+    } catch (IOException e) {
+      throw new RuntimeException("Error sending image to client", e);
+    }
   }
+
 
   /**
    * Returns the node type.

@@ -16,19 +16,14 @@ public class ImageLoader {
    */
   public static Image loadImageFromFile(String filePath) {
     try {
-      // Read the file into a byte array
       File imageFile = new File(filePath);
       byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
-
-      // Create a ByteArrayInputStream from the byte array
       ByteArrayInputStream byteStream = new ByteArrayInputStream(imageBytes);
-
-      // Create and return the JavaFX Image
       return new Image(byteStream);
     } catch (IOException e) {
       System.err.println("Error loading image from file: " + filePath);
       e.printStackTrace();
-      return null; // Return null if an error occurs
+      return null;
     }
 
   }

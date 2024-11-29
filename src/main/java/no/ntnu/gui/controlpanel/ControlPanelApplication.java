@@ -37,6 +37,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Scene mainScene;
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
+
+  private final Map<Integer, CameraPane> cameraPanes = new HashMap<>();
+
   private final Map<Integer, SensorActuatorNodeInfo> nodeInfos = new HashMap<>();
   private final Map<Integer, Tab> nodeTabs = new HashMap<>();
 
@@ -177,6 +180,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
     actuatorPanes.put(nodeInfo.getId(), actuatorPane);
     tab.setContent(new VBox(sensorPane, actuatorPane));
+    CameraPane cameraPane = new CameraPane();
+    cameraPanes.put(nodeInfo.getId(), cameraPane);
     nodeTabs.put(nodeInfo.getId(), tab);
     return tab;
   }

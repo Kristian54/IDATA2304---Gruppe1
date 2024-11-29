@@ -1,12 +1,17 @@
 package no.ntnu.greenhouse;
+
+import java.awt.Image;
 import java.io.*;
 import java.net.*;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.tools.ImageLoader;
 
 /**
  * A TCP client for a node to connect a sensor/actuator.
@@ -26,13 +31,19 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
    * Creates a new TCP client for a node to connect to a server.
    *
    * @param ipAddress The IP address of the server
-   * @param port The port number of the server
-   * @param node The sensor/actuator node to connect
+   * @param port      The port number of the server
+   * @param node      The sensor/actuator node to connect
    */
   public TcpSensorActuatorNodeClient(String ipAddress, int port, SensorActuatorNode node) {
-    if (node == null) throw new RuntimeException("Node cannot be null");
-    if (ipAddress == null) throw new RuntimeException("IP Address cannot be null");
-    if (port < 0 || port > 65535) throw new RuntimeException("Port number must be within 5 digits and not negative");
+    if (node == null) {
+      throw new RuntimeException("Node cannot be null");
+    }
+    if (ipAddress == null) {
+      throw new RuntimeException("IP Address cannot be null");
+    }
+    if (port < 0 || port > 65535) {
+      throw new RuntimeException("Port number must be within 5 digits and not negative");
+    }
     this.node = node;
     this.ip = ipAddress;
     this.port = port;
@@ -40,6 +51,7 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     node.addActuatorListener(this);
     node.addStateListener(this);
   }
+
 
   /**
    * Starts the TCP client and connects to the server.
@@ -49,10 +61,11 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sendId();
     sendNodeType();
     sendNodeActuatorData();
-
+    sendImageToServer("images/camera1.jpg");
     while (running) {
       recieveCommand();
     }
+
   }
 
   /**
@@ -136,6 +149,10 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     sendCommand(sb.toString());
   }
 
+  private void sendCameraImage() {
+    sendCommand("sendCameraImage-" + node.getId());
+  }
+
   /**
    * Sends the updated sensor data to the server.
    */
@@ -145,7 +162,7 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     builder.append(node.getId());
     builder.append(";");
     List<Sensor> sensors = node.getSensors();
-    for (Sensor sensor: sensors) {
+    for (Sensor sensor : sensors) {
       SensorReading reading = sensor.getReading();
       builder.append(reading.getType());
       builder.append("=");
@@ -187,15 +204,21 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
     } catch (IOException e) {
       System.out.println("Error connecting to server");
     }
+    //sendImageToControlPanel("images/camera1.jpg", 1);
+    sendCameraImage();
   }
 
   /**
    * Stops the connection to the server.
    */
-  private void stopConnection () {
+  private void stopConnection() {
     try {
-      if (this.writer != null) writer.close();
-      if (this.reader != null) reader.close();
+      if (this.writer != null) {
+        writer.close();
+      }
+      if (this.reader != null) {
+        reader.close();
+      }
       if (socket != null && !socket.isClosed()) {
         socket.close();
       }
@@ -231,6 +254,27 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
       }
     }
     return sent;
+  }
+
+
+  public void sendImageToServer(String path) {
+    String base64 = convertImageToBase64(path);
+
+    StringBuilder builder = new StringBuilder();
+    builder.append("sendCameraImage-");
+    builder.append(node.getId());
+    builder.append(";");
+    builder.append(base64);
+    sendCommand(builder.toString());
+  }
+
+  public String convertImageToBase64(String imagePath) {
+    try {
+      byte[] imageBytes = Files.readAllBytes(new File(imagePath).toPath());
+      return Base64.getEncoder().encodeToString(imageBytes);
+    } catch (IOException e) {
+      throw new RuntimeException("Error reading image file", e);
+    }
   }
 
   /**
@@ -279,4 +323,5 @@ public class TcpSensorActuatorNodeClient implements SensorListener, ActuatorList
   private void sendNodeRemoved() {
     sendCommand("nodeRemoved-" + node.getId());
   }
+
 }

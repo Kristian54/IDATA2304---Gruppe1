@@ -54,6 +54,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
       listeners.add(listener);
     }
   }
+  
 
   /**
    * Notify all listeners that a new node has been added to the network.
@@ -78,7 +79,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   /**
    * Notify all listeners that a sensor reading has been received.
    *
-   * @param nodeId The ID of the node that sent the reading
+   * @param nodeId  The ID of the node that sent the reading
    * @param sensors The list of sensor readings
    */
   @Override
@@ -89,9 +90,9 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   /**
    * Notify all listeners that an actuator state has been changed.
    *
-   * @param nodeId The ID of the node that sent the event
+   * @param nodeId     The ID of the node that sent the event
    * @param actuatorId The ID of the actuator
-   * @param isOn The new state of the actuator
+   * @param isOn       The new state of the actuator
    */
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {

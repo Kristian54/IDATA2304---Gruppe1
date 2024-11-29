@@ -39,9 +39,15 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
    * @param logic The logic of the control panel
    */
   public TcpControlpanelNodeClient(String ip, int port, ControlPanelLogic logic) {
-    if (logic == null) throw new IllegalArgumentException("Logic cannot be null");
-    if (ip == null) throw new IllegalArgumentException("IP Address cannot be null");
-    if (port < 0 || port > 65535) throw new IllegalArgumentException("Port number must be within 5 digits and not negative");
+    if (logic == null) {
+      throw new IllegalArgumentException("Logic cannot be null");
+    }
+    if (ip == null) {
+      throw new IllegalArgumentException("IP Address cannot be null");
+    }
+    if (port < 0 || port > 65535) {
+      throw new IllegalArgumentException("Port number must be within 5 digits and not negative");
+    }
     this.logic = logic;
     this.ip = ip;
     this.port = port;
@@ -125,13 +131,18 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
         advertiseActuatorChange(inputParts.get(1));
         break;
       case "nodeRemoved":
-        int nodeId = parseIntegerOrError(inputParts.get(1), "Invalid node ID: " + inputParts.get(1));
+        int nodeId =
+            parseIntegerOrError(inputParts.get(1), "Invalid node ID: " + inputParts.get(1));
         logic.onNodeRemoved(nodeId);
+        break;
+      case "sendCameraImage":
+        //
         break;
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
     }
   }
+
 
   /**
    * Advertise new sensor readings.
@@ -217,7 +228,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
         System.out.println("Spawning node " + specification);
         logic.onNodeAdded(nodeInfo);
       }
-    },1000L);
+    }, 1000L);
   }
 
   /**
@@ -274,7 +285,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     info.addActuator(actuator);
   }
 
- /**
+  /**
    * Advertise an actuator change.
    *
    * @param s The actuator change specification in the following format:
@@ -290,11 +301,13 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     if (actuatorInfo.length != 2) {
       throw new IllegalArgumentException("Invalid actuator info: " + parts[1]);
     }
-    int actuatorId = parseIntegerOrError(actuatorInfo[0], "Invalid actuator ID: " + actuatorInfo[0]);
+    int actuatorId =
+        parseIntegerOrError(actuatorInfo[0], "Invalid actuator ID: " + actuatorInfo[0]);
     boolean isOn = Boolean.parseBoolean(actuatorInfo[1]);
 
     sendActuatorChange(nodeId, actuatorId, isOn);
   }
+
   private void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
     logic.onActuatorStateChanged(nodeId, actuatorId, isOn);
   }
@@ -350,9 +363,9 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
   /**
    * Called when an actuator has changed its state.
    *
-   * @param nodeId   The ID of the node on which the actuator is placed
+   * @param nodeId     The ID of the node on which the actuator is placed
    * @param actuatorId The ID of the actuator that has changed its state
-   * @param isOn     The new state of the actuator
+   * @param isOn       The new state of the actuator
    */
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
@@ -377,7 +390,7 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
         socket.close();
       }
     } catch (IOException e) {
-        throw new RuntimeException(e);
+      throw new RuntimeException(e);
     }
   }
 }

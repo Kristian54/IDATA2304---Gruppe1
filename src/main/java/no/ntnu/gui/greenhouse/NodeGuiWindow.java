@@ -1,19 +1,15 @@
 package no.ntnu.gui.greenhouse;
 
 import java.util.List;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.gui.common.ActuatorPane;
-import no.ntnu.gui.common.CameraPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
@@ -54,8 +50,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
     setTitle("Node " + node.getId());
     initializeListeners(node);
     setPositionAndSize();
-    startImageRotation();
-    requestCameraImage();
+
   }
 
   private void setPositionAndSize() {
@@ -83,22 +78,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
     return new VBox(sensorPane, actuatorPane, cameraPane);
   }
 
-  private void startImageRotation() {
-    Timeline timeline = new Timeline(
-        new KeyFrame(Duration.seconds(10), event -> switchToNextImage())
-    );
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.play();
-  }
-
-  private void switchToNextImage() {
-    currentImageIndex = (currentImageIndex + 1) % cameraImages.length;
-    cameraPane.setCameraImage(cameraImages[currentImageIndex]);
-  }
-
-  private void requestCameraImage() {
-    // TODO: Implement
-  }
 
   @Override
   public void sensorsUpdated(List<Sensor> sensors) {
