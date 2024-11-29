@@ -43,4 +43,11 @@ public interface GreenhouseEventListener {
    * @param isOn  When true, actuator is on; off when false.
    */
   void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn);
+
+  /**
+   * This event is fired when a camera takes a picture.
+   */
+  void onPictureTaken(int nodeId, String data);
+
+
 }

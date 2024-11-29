@@ -1,11 +1,14 @@
 package no.ntnu.greenhouse;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.sql.SQLOutput;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +16,9 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
 
-/** A TCP client for a node to connect a sensor/actuator. */
+/**
+ * A TCP client for a node to connect a sensor/actuator.
+ */
 public class TcpSensorActuatorNodeClient
     implements SensorListener, ActuatorListener, NodeStateListener {
 
@@ -30,8 +35,8 @@ public class TcpSensorActuatorNodeClient
    * Creates a new TCP client for a node to connect to a server.
    *
    * @param ipAddress The IP address of the server
-   * @param port The port number of the server
-   * @param node The sensor/actuator node to connect
+   * @param port      The port number of the server
+   * @param node      The sensor/actuator node to connect
    */
   public TcpSensorActuatorNodeClient(String ipAddress, int port, SensorActuatorNode node) {
     if (node == null) {
@@ -51,9 +56,12 @@ public class TcpSensorActuatorNodeClient
     node.addStateListener(this);
   }
 
-  /** Starts the TCP client and connects to the server. */
+  /**
+   * Starts the TCP client and connects to the server.
+   */
   public void run() {
     startConnection();
+    sendImageToServer();
     running = true;
     while (running) {
       receiveCommand();
@@ -88,7 +96,9 @@ public class TcpSensorActuatorNodeClient
     }
   }
 
-  /** Receives a command from the server. */
+  /**
+   * Receives a command from the server.
+   */
   private void receiveCommand() {
     try {
       String command = reader.readLine();
@@ -119,6 +129,7 @@ public class TcpSensorActuatorNodeClient
         break;
       case "controlPanelAdded":
         sendNodeActuatorData();
+        sendImageToServer();
         break;
       default:
         throw new RuntimeException("Unknown command: " + command);
@@ -138,17 +149,23 @@ public class TcpSensorActuatorNodeClient
     node.setActuator(actuatorId, isOn);
   }
 
-  /** Sends the ID of the node to the server. */
+  /**
+   * Sends the ID of the node to the server.
+   */
   private void sendId() {
     sendCommand("setId-" + node.getId());
   }
 
-  /** Sends the type of the node to the server. */
+  /**
+   * Sends the type of the node to the server.
+   */
   private void sendNodeType() {
     sendCommand("setNodeType-" + "SensorActuator");
   }
 
-  /** Sends the actuator data of the node to the server. */
+  /**
+   * Sends the actuator data of the node to the server.
+   */
   private void sendNodeActuatorData() {
     StringBuilder sb = new StringBuilder();
     sb.append("nodeAdded-");
@@ -167,7 +184,9 @@ public class TcpSensorActuatorNodeClient
     sendCommand(sb.toString());
   }
 
-  /** Sends the updated sensor data to the server. */
+  /**
+   * Sends the updated sensor data to the server.
+   */
   private void sendUpdatedSensorData() {
     StringBuilder builder = new StringBuilder();
     builder.append("updateSensorData-");
@@ -202,7 +221,9 @@ public class TcpSensorActuatorNodeClient
     return actuatorCounts;
   }
 
-  /** Stops the client. */
+  /**
+   * Stops the client.
+   */
   public void stop() {
     this.running = false;
     this.stopped = true;
@@ -227,13 +248,17 @@ public class TcpSensorActuatorNodeClient
     return sent;
   }
 
-  /** Sends the updated sensor data to the server. */
+  /**
+   * Sends the updated sensor data to the server.
+   */
   @Override
   public void sensorsUpdated(List<Sensor> sensors) {
     sendUpdatedSensorData();
   }
 
-  /** Sends the updated actuator data to the server. */
+  /**
+   * Sends the updated actuator data to the server.
+   */
   @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
     sendActuatorUpdate(actuator);
@@ -252,6 +277,25 @@ public class TcpSensorActuatorNodeClient
     builder.append(actuator.getId());
     builder.append("=");
     builder.append(actuator.isOn());
+    sendCommand(builder.toString());
+  }
+
+  /**
+   * Sends the camera image to the server.
+   */
+  public void sendImageToServer() {
+    try {
+      Thread.sleep(2000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    String base64 = node.getCameraImageAsBase64();
+
+    StringBuilder builder = new StringBuilder();
+    builder.append("sendCameraImage-");
+    builder.append(node.getId());
+    builder.append(";");
+    builder.append(base64);
     sendCommand(builder.toString());
   }
 
