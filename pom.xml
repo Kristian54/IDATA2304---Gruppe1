@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.ntnu</groupId>
     <artifactId>datakomm-project</artifactId>
-    <version>2023.1.0</version>
+    <version>1.0</version>
     <name>Course project for IDATA2304 Computer Communication and Network Programming, NTNU</name>
     <url>https://www.ntnu.edu/studies/courses/IDATA2304/2023</url>
 
