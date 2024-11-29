@@ -280,6 +280,9 @@ public class TcpSensorActuatorNodeClient
     sendCommand(builder.toString());
   }
 
+  /**
+   * Sends the camera image to the server.
+   */
   public void sendImageToServer() {
     try {
       Thread.sleep(2000);

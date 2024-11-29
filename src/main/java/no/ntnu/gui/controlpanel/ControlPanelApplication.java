@@ -139,17 +139,17 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-    public void onPictureTaken(int nodeId, String data) {
-        Logger.info("Picture taken from node " + nodeId);
-        CameraPane cameraPane = cameraPanes.get(nodeId);
-        if (cameraPane != null) {
-          Platform.runLater(() -> {
-            cameraPane.addImage(data);
-          });
-        } else {
-        Logger.error("No camera section for node " + nodeId);
-        }
+  public void onPictureTaken(int nodeId, String data) {
+    Logger.info("Picture taken from node " + nodeId);
+    CameraPane cameraPane = cameraPanes.get(nodeId);
+    if (cameraPane != null) {
+      Platform.runLater(() -> {
+        cameraPane.addImage(data);
+      });
+    } else {
+      Logger.error("No camera section for node " + nodeId);
     }
+  }
 
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;

@@ -104,7 +104,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
   }
 
   /**
-   * Returns camera image as base64
+   * Returns camera image as base64.
    */
   public String getCameraImageAsBase64() {
     String filePath = "images/camera1.jpg";

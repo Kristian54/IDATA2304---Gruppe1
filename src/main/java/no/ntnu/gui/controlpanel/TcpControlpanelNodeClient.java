@@ -131,7 +131,8 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
         break;
       case "sendCameraImage":
         String[] nodeIdAsString = inputParts.get(1).split(";");
-        int nodeId2 = parseIntegerOrError(nodeIdAsString[0], "Invalid node ID: " + inputParts.get(1));
+        int nodeId2 = parseIntegerOrError(
+            nodeIdAsString[0], "Invalid node ID: " + inputParts.get(1));
         logic.onPictureTaken(nodeId2, nodeIdAsString[1]);
         break;
       default:
