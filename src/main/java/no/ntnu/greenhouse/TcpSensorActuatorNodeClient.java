@@ -61,6 +61,8 @@ public class TcpSensorActuatorNodeClient
    */
   public void run() {
     startConnection();
+
+    sendImageToServer();
     running = true;
     while (running) {
       receiveCommand();
@@ -278,8 +280,13 @@ public class TcpSensorActuatorNodeClient
     sendCommand(builder.toString());
   }
 
-  public void sendImageToServer(String path) {
-    String base64 = convertImageToBase64(path);
+  public void sendImageToServer() {
+    try {
+      Thread.sleep(2000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    String base64 = node.convertImageToBase64();
 
     StringBuilder builder = new StringBuilder();
     builder.append("sendCameraImage-");
@@ -287,15 +294,6 @@ public class TcpSensorActuatorNodeClient
     builder.append(";");
     builder.append(base64);
     sendCommand(builder.toString());
-  }
-
-  public String convertImageToBase64(String imagePath) {
-    try {
-      byte[] imageBytes = Files.readAllBytes(new File(imagePath).toPath());
-      return Base64.getEncoder().encodeToString(imageBytes);
-    } catch (IOException e) {
-      throw new RuntimeException("Error reading image file", e);
-    }
   }
 
   @Override

@@ -1,5 +1,9 @@
 package no.ntnu.greenhouse;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -97,6 +101,20 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
       sensorListeners.add(listener);
     }
   }
+
+  /**
+   * Returns camera image as base64
+   */
+  public String convertImageToBase64() {
+    String imagePath = "images/camera1.jpg";
+    try {
+      byte[] imageBytes = Files.readAllBytes(new File(imagePath).toPath());
+      return Base64.getEncoder().encodeToString(imageBytes);
+    } catch (IOException e) {
+      throw new RuntimeException("Error reading image file", e);
+    }
+  }
+
 
   /**
    * Register a new listener for actuator updates.

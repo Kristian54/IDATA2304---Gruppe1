@@ -129,6 +129,11 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
             parseIntegerOrError(inputParts.get(1), "Invalid node ID: " + inputParts.get(1));
         logic.onNodeRemoved(nodeId);
         break;
+      case "sendCameraImage":
+        String[] nodeIdAsString = inputParts.get(1).split(";");
+        int nodeId2 = parseIntegerOrError(nodeIdAsString[0], "Invalid node ID: " + inputParts.get(1));
+        logic.onPictureTaken(nodeId2, nodeIdAsString[1]);
+        break;
       default:
         System.out.println("Unknown command: " + inputParts.get(0));
     }
@@ -361,6 +366,11 @@ public class TcpControlpanelNodeClient implements GreenhouseEventListener {
     sb.append("=");
     sb.append(isOn);
     sendCommand(sb.toString());
+  }
+
+  @Override
+  public void onPictureTaken(int nodeId, String data) {
+
   }
 
   /** Stops the client. */

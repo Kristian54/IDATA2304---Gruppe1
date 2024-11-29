@@ -7,9 +7,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
@@ -37,8 +39,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Scene mainScene;
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
+  private final Map<Integer, CameraPane> cameraPanes = new HashMap<>();
   private final Map<Integer, SensorActuatorNodeInfo> nodeInfos = new HashMap<>();
   private final Map<Integer, Tab> nodeTabs = new HashMap<>();
+  private CameraPane cameraPane;
 
   /**
    * Application entrypoint for the GUI of a control panel.
@@ -134,6 +138,19 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     }
   }
 
+  @Override
+    public void onPictureTaken(int nodeId, String data) {
+        Logger.info("Picture taken from node " + nodeId);
+        CameraPane cameraPane = cameraPanes.get(nodeId);
+        if (cameraPane != null) {
+          Platform.runLater(() -> {
+            cameraPane.addImage(data);
+          });
+        } else {
+        Logger.error("No camera section for node " + nodeId);
+        }
+    }
+
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
     SensorActuatorNodeInfo nodeInfo = nodeInfos.get(nodeId);
@@ -176,7 +193,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     sensorPanes.put(nodeInfo.getId(), sensorPane);
     ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
     actuatorPanes.put(nodeInfo.getId(), actuatorPane);
-    tab.setContent(new VBox(sensorPane, actuatorPane));
+    CameraPane cameraPane = new CameraPane(nodeInfo.getId());
+    cameraPanes.put(nodeInfo.getId(), cameraPane);
+    tab.setContent(new VBox(sensorPane, actuatorPane, cameraPane));
     nodeTabs.put(nodeInfo.getId(), tab);
     return tab;
   }

@@ -99,6 +99,11 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   @Override
+  public void onPictureTaken(int nodeId, String data) {
+    listeners.forEach(listener -> listener.onPictureTaken(nodeId, data));
+  }
+
+  @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
     if (communicationChannel != null) {
       communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn());
