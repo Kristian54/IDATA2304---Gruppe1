@@ -13,6 +13,7 @@ See protocol description in [protocol.md](protocol.md).
 ## Getting started
 
 The projects contains several runnable classes, the order of which you run these is not important.
+Run the following classes from the main branch:
 - `GreenhouseGuiStarter` - starts the greenhouse simulation
 - `ControlPanelStarter` - starts a control panel, multiple instances can be run simultaneously (allow "Multiple instances" in the run configuration)
 - `GreenhouseServerStarter` - starts the greenhouse server
